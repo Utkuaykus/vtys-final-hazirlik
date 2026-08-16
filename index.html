@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Background Animation -->
     <div class="bg-animation">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -19,20 +20,21 @@
         <div class="floating-shape shape-5"></div>
     </div>
 
+    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="logo">
+                <div class="logo" onclick="switchTab('home')" title="Ana Sayfaya Dön">
                     <span class="logo-icon">🗃️</span>
                     <div>
                         <h1 class="logo-text">VTYS Final Hazırlık</h1>
-                        <p class="logo-sub">Veritabanı Yönetim Sistemleri • Konu Anlatımı & 10 Sınav</p>
+                        <p class="logo-sub">Veritabanı Yönetim Sistemleri • Konu & Sınavlar</p>
                     </div>
                 </div>
                 <nav class="header-nav">
-                    <button class="nav-btn active" data-tab="home" id="navHome">🏠 Ana Sayfa</button>
-                    <button class="nav-btn" data-tab="topics" id="navTopics">📚 Konular</button>
-                    <button class="nav-btn" data-tab="exams" id="navExams">📝 Sınavlar</button>
+                    <button class="nav-btn active" data-tab="home" id="navHome"><span class="emoji">🏠</span> Ana Sayfa</button>
+                    <button class="nav-btn" data-tab="topics" id="navTopics"><span class="emoji">📚</span> Konular</button>
+                    <button class="nav-btn" data-tab="exams" id="navExams"><span class="emoji">📝</span> Sınavlar</button>
                 </nav>
             </div>
         </div>
@@ -40,28 +42,32 @@
 
     <main class="main">
         <div class="container">
-            <!-- HOME -->
+            <!-- ==================== HOME SECTION ==================== -->
             <section id="homeSection" class="section-page">
                 <div class="hero-section">
-                    <h2 class="hero-title">100 Almaya Hazır mısın? 🎯</h2>
-                    <p class="hero-desc">Önce konuları öğren, sonra sınavlarla kendini test et. Son slaytlara ağırlık verilmiştir: Trigger, Cursor, Stored Procedure, PL/SQL ve Normalizasyon.</p>
+                    <div class="hero-badge"><span class="emoji">🎯</span> Target: Finalden 100 Almak</div>
+                    <h2 class="hero-title">Veritabanı Finaline Eksiksiz Hazırlan <span class="emoji">🚀</span></h2>
+                    <p class="hero-desc">Tüm ders slaytları, PDF'ler ve geçmiş sorular özümsenerek hazırlandı. 12 ayrı konuda anlatım ve son slaytlara (Trigger, Cursor, Stored Procedure, PL/SQL, Normalizasyon) ağırlık verilen 10 farklı 40 soruluk sınav!</p>
+                    
                     <div class="topic-tags">
-                        <span class="tag tag-hot">🔥 Trigger</span>
-                        <span class="tag tag-hot">🔥 Cursor</span>
-                        <span class="tag tag-hot">🔥 Stored Procedure</span>
-                        <span class="tag tag-hot">🔥 PL/SQL</span>
-                        <span class="tag tag-hot">🔥 Normalizasyon</span>
-                        <span class="tag tag-warm">⭐ SQL Sorguları</span>
-                        <span class="tag tag-warm">⭐ ER Modelleme</span>
-                        <span class="tag tag-warm">⭐ DDL / Bütünlük</span>
-                        <span class="tag tag-cool">📘 İlişkisel Cebir</span>
-                        <span class="tag tag-cool">📘 İlişkisel Model</span>
+                        <span class="tag tag-hot"><span class="emoji">🔥</span> Trigger (Tetikleyici)</span>
+                        <span class="tag tag-hot"><span class="emoji">🔥</span> Cursor (İmleçler)</span>
+                        <span class="tag tag-hot"><span class="emoji">🔥</span> Stored Procedure</span>
+                        <span class="tag tag-hot"><span class="emoji">🔥</span> PL/SQL Blokları</span>
+                        <span class="tag tag-hot"><span class="emoji">🔥</span> Normalizasyon (1NF-BCNF)</span>
+                        <span class="tag tag-warm"><span class="emoji">⭐</span> SQL & Alt Sorgular</span>
+                        <span class="tag tag-warm"><span class="emoji">⭐</span> ER Modelleme</span>
+                        <span class="tag tag-warm"><span class="emoji">⭐</span> DDL & Bütünlük</span>
+                        <span class="tag tag-cool"><span class="emoji">📘</span> İlişkisel Cebir</span>
+                        <span class="tag tag-cool"><span class="emoji">📘</span> İlişkisel Model</span>
                     </div>
+
                     <div class="hero-actions">
-                        <button class="btn btn-primary btn-lg" onclick="switchTab('topics')">📚 Konuları Öğren</button>
-                        <button class="btn btn-secondary btn-lg" onclick="switchTab('exams')">📝 Sınavlara Başla</button>
+                        <button class="btn btn-primary btn-lg" onclick="switchTab('topics')"><span class="emoji">📚</span> Konuları Öğren</button>
+                        <button class="btn btn-secondary btn-lg" onclick="switchTab('exams')"><span class="emoji">📝</span> Sınavlara Başla</button>
                     </div>
                 </div>
+
                 <div class="stats-row">
                     <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Konu Başlığı</div></div>
                     <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Farklı Sınav</div></div>
@@ -70,33 +76,33 @@
                 </div>
             </section>
 
-            <!-- TOPICS -->
+            <!-- ==================== TOPICS SECTION ==================== -->
             <section id="topicsSection" class="section-page hidden">
                 <div class="topics-header">
-                    <h2 class="section-title">📚 Konu Anlatımları</h2>
-                    <p class="section-desc">Tüm ders slaytlarından derlenen kapsamlı konu anlatımları. Her konuyu tıklayarak detaylı bilgiye ulaşın.</p>
+                    <h2 class="section-title"><span class="emoji">📚</span> Konu Anlatımları</h2>
+                    <p class="section-desc">Tüm ders slaytlarından derlenen 12 temel konu başlığı. Bir konu seçerek inceleyin.</p>
                 </div>
                 <div class="topics-sidebar-layout">
                     <div class="topics-nav" id="topicsNav"></div>
                     <div class="topic-content-area" id="topicContentArea">
                         <div class="topic-placeholder">
                             <span class="placeholder-icon">👈</span>
-                            <p>Soldaki menüden bir konu seçin</p>
+                            <p>Menüden bir konu seçin</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- EXAMS LIST -->
+            <!-- ==================== EXAMS LIST SECTION ==================== -->
             <section id="examsSection" class="section-page hidden">
                 <div class="topics-header">
-                    <h2 class="section-title">📝 Sınavlar</h2>
-                    <p class="section-desc">10 farklı 40 soruluk sınav. Son slaytlara ağırlık verilmiştir.</p>
+                    <h2 class="section-title"><span class="emoji">📝</span> Deneme Sınavları</h2>
+                    <p class="section-desc">10 farklı 40 soruluk test. Son slaytlara (Trigger, Cursor, PL/SQL vb.) ağırlık verilmiştir.</p>
                 </div>
                 <div class="exams-grid" id="examsGrid"></div>
             </section>
 
-            <!-- EXAM VIEW -->
+            <!-- ==================== EXAM VIEW SECTION ==================== -->
             <section id="examView" class="section-page hidden">
                 <div class="exam-header-bar">
                     <button class="btn-back" id="btnBack"><span>←</span> Sınavlara Dön</button>
@@ -118,7 +124,7 @@
                 </div>
             </section>
 
-            <!-- RESULTS -->
+            <!-- ==================== RESULTS SECTION ==================== -->
             <section id="resultsView" class="section-page hidden">
                 <div class="results-card">
                     <div class="results-header">
