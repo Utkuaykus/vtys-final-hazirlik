@@ -1,714 +1,127 @@
-// =============================================
-// VTYS MASTER KONU ANLATIMLARI - 100 Tam Puan Rehberi
-// Tüm ders slaytları, deney föyü ve çıkmış sınavlardan derlenmiştir.
-// =============================================
+// ==========================================================================
+// VTYS MASTER DERS NOTLARI VE EKSİKSİZ SINAV REHBERİ (15 BÖLÜM)
+// 237 Ders Slaytı, Deney Föyü, Özel PDF'ler ve Çıkmış Sınav Sorularından Derlenmiştir.
+// ==========================================================================
 
 const TOPICS = [
-{
-  id: "iliskisel-model",
-  icon: "🔗",
-  title: "İlişkisel Model (Relational Model)",
-  priority: "medium",
-  subtitle: "DBMS_4 - E.F. Codd (1970) İlişkisel Veri Modeli, Bütünlük Kuralları & Anahtar Hiyerarşisi",
-  content: `<div class="topic-section">
-    <h3>📌 İlişkisel Modelin Doğuşu ve Temel Kavramlar</h3>
-    <p>İlişkisel Veri Tabanı Yönetim Sistemi (RDBMS), 1970 yılında <strong>E.F. Codd</strong> tarafından IBM laboratuvarlarında matematiksel küme teorisine dayalı olarak geliştirilmiştir. İlişkisel modelde tüm veriler mantıksal olarak <strong>ilişkiler (tablolar / relations)</strong> şeklinde temsil edilir.</p>
-    <ul>
-        <li><strong>İlişki (Relation / Tablo):</strong> Satır ve sütunlardan oluşan iki boyutlu matematiksel veri yapısıdır.</li>
-        <li><strong>Demet (Tuple / Satır / Record):</strong> İlişkideki tek bir varlığa ait bilgileri içeren yatay kayıttır.</li>
-        <li><strong>Nitelik (Attribute / Sütun / Field):</strong> Bir varlığın adlandırılmış özelliğidir (Örn: <code>ad</code>, <code>maas</code>).</li>
-        <li><strong>Etki Alanı (Domain):</strong> Bir niteliğin alabileceği geçerli atomik değerler kümesidir (Örn: Not alanı için 0-100 aralığı).</li>
-        <li><strong>Derece (Degree / Arity):</strong> Bir tablodaki toplam nitelik (sütun) sayısıdır.</li>
-        <li><strong>Kardinalite (Cardinality):</strong> Bir tablodaki toplam demet (satır) sayısıdır.</li>
-    </ul>
-</div>
-
-<div class="topic-section">
-    <h3>📐 Matematiksel İlişki Tanımı</h3>
-    <p>D<sub>1</sub>, D<sub>2</sub>, ..., D<sub>n</sub> etki alanları olsun. Kartezyen Çarpım: D<sub>1</sub> × D<sub>2</sub> × ... × D<sub>n</sub> kümesidir.</p>
-    <p>Bir <strong>İlişki (R)</strong>, bu Kartezyen çarpım kümesinin herhangi bir alt kümesidir: <code>R ⊆ (D₁ × D₂ × ... × Dₙ)</code>.</p>
-</div>
-
-<div class="topic-section">
-    <h3>🔑 Anahtar (Key) Türleri ve Hiyerarşisi</h3>
-    <table class="table-styled">
-        <tr><th>Anahtar Türü</th><th>Tanım ve Özellikleri</th><th>Sınav Örneği</th></tr>
-        <tr><td><strong>Süper Anahtar (Super Key)</strong></td><td>Tablodaki her bir satırı benzersiz (unique) olarak tanımlayabilen herhangi bir sütun veya sütunlar kümesidir. Fazladan gereksiz sütun içerebilir.</td><td><code>(TCKimlik, Ad, Soyad)</code></td></tr>
-        <tr><td><strong>Aday Anahtar (Candidate Key)</strong></td><td>Gereksiz hiçbir sütun içermeyen <strong>minimum süper anahtardır</strong>. Kendisini oluşturan hiçbir alt küme tek başına anahtar olamaz. Asla NULL içeremez.</td><td><code>TCKimlik</code>, <code>OgrenciNo</code></td></tr>
-        <tr><td><strong>Birincil Anahtar (Primary Key - PK)</strong></td><td>Aday anahtarlar arasından veritabanı tasarımcısı tarafından tablonun ana tanımlayıcısı olarak seçilen tekil anahtardır. <strong>Asla NULL olamaz!</strong></td><td><code>OgrenciNo</code></td></tr>
-        <tr><td><strong>Alternatif / İkincil Anahtar (Alternate Key)</strong></td><td>Aday anahtarlar arasından birincil anahtar olarak seçilmeyen diğer aday anahtarlardır (UNIQUE kısıtı verilir).</td><td><code>TCKimlik</code></td></tr>
-        <tr><td><strong>Yabancı Anahtar (Foreign Key - FK)</strong></td><td>Bir tablodaki satırı başka bir tablonun birincil (veya aday) anahtarına bağlayan referans sütunudur. Referans bütünlüğünü sağlar. NULL değer kabul edebilir.</td><td><code>BolumKod</code> (Ogrenci tablosunda)</td></tr>
-        <tr><td><strong>Bileşik Anahtar (Composite Key)</strong></td><td>Birden fazla sütunun bir araya gelerek oluşturduğu tek bir birincil anahtardır.</td><td><code>(OgrenciNo, DersKod)</code></td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🛡️ İlişkisel Bütünlük Kuralları (Integrity Rules)</h3>
-    <div class="info-box">
-        <strong>1. Varlık Bütünlüğü (Entity Integrity):</strong><br>
-        Temel bir ilişkinin Birincil Anahtarını (PK) oluşturan hiçbir sütun <strong>NULL (boş/bilinmeyen) DEĞER ALAMAZ</strong> ve her satırda benzersiz olmalıdır.
-    </div>
-    <div class="info-box">
-        <strong>2. Referans Bütünlüğü (Referential Integrity):</strong><br>
-        Bir yabancı anahtar (FK) değeri boş (NULL) değilse, mutlaka hedef tablodaki geçerli ve mevcut bir birincil anahtar değerine işaret etmelidir. 'Yetim kayıt' (orphan record) oluşamaz!
-    </div>
-    <div class="info-box warning">
-        <strong>3. Etki Alanı Bütünlüğü (Domain Integrity):</strong><br>
-        Her sütun yalnızca kendi etki alanında tanımlanan veri tipine ve CHECK kısıtlarına uygun atomik değerler alabilir.
-    </div>
-    <div class="info-box warning">
-        <strong>4. İş / Kullanıcı Tanımlı Bütünlük (Enterprise / Business Integrity):</strong><br>
-        Kurumun özel iş kurallarını zorunlu kılan kısıtlamalardır (Örn: Maaş asgari ücretten az olamaz, final notu 0-100 arası olmalıdır). Trigger ve CHECK kısıtları ile sağlanır.
-    </div>
-</div>`
-},
-{
-  id: "iliskisel-cebir",
-  icon: "🧮",
-  title: "İlişkisel Cebir (Relational Algebra)",
-  priority: "high",
-  subtitle: "DBMS_5 - Prosedürel İlişkisel İşlemler, Semboller (σ, π, ⋈, ×, ÷, ⋉) & SQL Dönüşümleri",
-  content: `<div class="topic-section">
-    <h3>📌 İlişkisel Cebir Nedir?</h3>
-    <p>İlişkisel cebir, bir veya daha fazla ilişkiyi girdi alarak orijinal ilişkileri değiştirmeden sonuçta <strong>yeni bir ilişki (tablo)</strong> üreten <strong>prosedürel sorgu dilidir</strong>.</p>
-    <p><strong>Kapanma (Closure) Özelliği:</strong> Her işlemin çıktısı yine bir ilişkisel tablo olduğundan, işlemler iç içe (nested) ve zincirleme olarak birleştirilebilir.</p>
-</div>
-
-<div class="topic-section">
-    <h3>📐 Temel ve Türetilmiş İşlemler Tablosu</h3>
-    <table class="table-styled">
-        <tr><th>İşlem Adı</th><th>Sembol</th><th>Matematiksel Gösterim</th><th>SQL Eşdeğeri</th><th>Açıklama</th></tr>
-        <tr><td><strong>Seçim (Selection)</strong></td><td>σ (sigma)</td><td>σ<sub>koşul</sub>(R)</td><td><code>WHERE</code></td><td>Koşulu sağlayan satırları (yatay alt küme) filtreler.</td></tr>
-        <tr><td><strong>İzdüşüm (Projection)</strong></td><td>π (pi)</td><td>π<sub>sütun1, sütun2</sub>(R)</td><td><code>SELECT DISTINCT</code></td><td>Belirtilen sütunları (dikey alt küme) seçer, tekrarlı satırları eler.</td></tr>
-        <tr><td><strong>Birleşim (Union)</strong></td><td>∪</td><td>R ∪ S</td><td><code>UNION</code></td><td>İki birleşim uyumlu tablonun tüm satırlarını tekrarsız birleştirir.</td></tr>
-        <tr><td><strong>Küme Farkı (Difference)</strong></td><td>−</td><td>R − S</td><td><code>EXCEPT / MINUS</code></td><td>R ilişkisinde bulunup S ilişkisinde bulunmayan kayıtları verir.</td></tr>
-        <tr><td><strong>Kesişim (Intersection)</strong></td><td>∩</td><td>R ∩ S = R − (R − S)</td><td><code>INTERSECT</code></td><td>Her iki ilişkide de ortak bulunan satırları verir.</td></tr>
-        <tr><td><strong>Kartezyen Çarpım</strong></td><td>×</td><td>R × S</td><td><code>CROSS JOIN</code></td><td>Tüm olası satır çiftlerini üretir. Derece = n+m, Kardinalite = |R| × |S|.</td></tr>
-        <tr><td><strong>Teta Birleştirme</strong></td><td>⋈<sub>θ</sub></td><td>R ⋈<sub>θ</sub> S = σ<sub>θ</sub>(R × S)</td><td><code>JOIN ... ON koşul</code></td><td>Kartezyen çarpım üzerine teta karşılaştırma koşulu (<, ≤, =, >, ≥, <>) uygular.</td></tr>
-        <tr><td><strong>Doğal Birleştirme</strong></td><td>⋈</td><td>R ⋈ S</td><td><code>NATURAL JOIN</code></td><td>Ortak isimli sütunlarda eşitlik kontrolü yapar ve yinelenen sütunu teke indirir.</td></tr>
-        <tr><td><strong>Bölme (Division)</strong></td><td>÷ veya /</td><td>R ÷ S</td><td>'Tümünü içeren' sorgular</td><td>S'deki tüm elemanlarla ilişkili olan R elemanlarını bulur (Örn: Tüm dersleri alan öğrenciler).</td></tr>
-        <tr><td><strong>Yeniden Adlandırma</strong></td><td>ρ (rho)</td><td>ρ<sub>S</sub>(R) veya ρ<sub>(A1,A2)</sub>(R)</td><td><code>AS alias</code></td><td>İlişkiye veya niteliklerine yeni isim/takma ad verir.</td></tr>
-        <tr><td><strong>Semijoin (Yarı Birleşim)</strong></td><td>⋉</td><td>R ⋉ S = π<sub>R</sub>(R ⋈ S)</td><td><code>WHERE EXISTS</code></td><td>R ve S birleştirilir ancak yalnızca R'nin sütunları sonuçta döndürülür.</td></tr>
-        <tr><td><strong>Sol Dış Birleştirme</strong></td><td>⟕</td><td>R ⟕ S</td><td><code>LEFT JOIN</code></td><td>R'deki tüm kayıtlar gelir, S'de eşleşmeyenler NULL ile dolar.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>💡 Sınavda Çıkan SQL ↔ İlişkisel Cebir Dönüşüm Örnekleri</h3>
-    <div class="code-example">-- Örnek 1: Yazılım bölümündeki personellerin ad ve maaşları
--- SQL: SELECT ad, maas FROM Personel WHERE bolum = 'Yazilim';
-CEBİR: π_ad, maas ( σ_bolum='Yazilim' (Personel) )
-
--- Örnek 2: '163 Main St' adresindeki şubede çalışan personellerin bilgileri
-CEBİR: Staff ⋈_Staff.branchNo=Branch.branchNo ( σ_street='163 Main St' (Branch) )
-
--- Örnek 3: Hiç kiralık mülk yönetmeyen personeller
-CEBİR: π_staffNo(Staff) − π_staffNo(PropertyForRent)
-
--- Örnek 4: Tüm dersleri alan öğrenciler (Bölme / Division)
-CEBİR: π_ogrNo, dersKod(Notlar) ÷ π_dersKod(Dersler)</div>
-</div>`
-},
-{
-  id: "sql-temel",
-  icon: "💻",
-  title: "SQL (Structured Query Language) ve JOIN İşlemleri",
-  priority: "high",
-  subtitle: "DBMS_6 - Sorgulama Sırası, Filtreleme, JOIN Türleri, Alt Sorgular & Küme Mantığı",
-  content: `<div class="topic-section">
-    <h3>📌 SQL Komut Aileleri</h3>
-    <table class="table-styled">
-        <tr><th>Grup</th><th>Açılımı</th><th>Temel Komutlar</th><th>Görevi</th></tr>
-        <tr><td><strong>DQL</strong></td><td>Data Query Language</td><td><code>SELECT</code></td><td>Verileri filtreleyip sorgulamak</td></tr>
-        <tr><td><strong>DML</strong></td><td>Data Manipulation Language</td><td><code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td><td>Tablodaki verileri eklemek, güncellemek ve silmek</td></tr>
-        <tr><td><strong>DDL</strong></td><td>Data Definition Language</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, <code>TRUNCATE</code></td><td>Veritabanı nesnelerini oluşturmak ve değiştirmek</td></tr>
-        <tr><td><strong>DCL</strong></td><td>Data Control Language</td><td><code>GRANT</code>, <code>REVOKE</code></td><td>Kullanıcı yetkilerini tanımlamak ve geri almak</td></tr>
-        <tr><td><strong>TCL</strong></td><td>Transaction Control Language</td><td><code>COMMIT</code>, <code>ROLLBACK</code>, <code>SAVEPOINT</code></td><td>İşlem akışını onaylamak ve geri almak</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>⚙️ SQL Motorunun Mantıksal Çalışma Sırası (Logical Query Processing)</h3>
-    <p>Bir SQL sorgusu yazıldığı sırada değil, aşağıdaki <strong>kesin mantıksal sırada</strong> çalıştırılır:</p>
-    <div class="code-example">1. FROM & JOIN     → Kaynak tablolar belirlenir ve birleştirilir.
-2. WHERE           → Bireysel satırlar filtrelenir (Toplama fonksiyonu KULLANILAMAZ).
-3. GROUP BY        → Kalan satırlar belirtilen sütunlara göre gruplanır.
-4. HAVING          → Oluşan grup özetleri filtrelenir (Toplama fonksiyonu İÇERİR).
-5. SELECT          → İstenen sütunlar ve hesaplanmış alanlar hesaplanır.
-6. DISTINCT        → Tekrarlayan satırlar sonuç kümesinden elenir.
-7. ORDER BY        → Sonuç kümesi sıralanır (ASC / DESC).
-8. TOP / LIMIT     → İstenen satır adedi sınırlandırılır.</div>
-    <div class="info-box warning">
-        <strong>⚠️ Kritik Sınav Tuzağı:</strong> SELECT'te tanımlanan bir takma ad (alias) <code>WHERE</code> içinde KULLANILAMAZ! Çünkü WHERE, SELECT'ten önce çalışır. Ancak <code>ORDER BY</code> içinde kullanılabilir çünkü ORDER BY en son çalışır!
-    </div>
-</div>
-
-<div class="topic-section">
-    <h3>🔗 JOIN (Tablo Birleştirme) Çeşitleri</h3>
-    <table class="table-styled">
-        <tr><th>Join Çeşidi</th><th>Sözdizimi</th><th>Sonuç Mantığı</th></tr>
-        <tr><td><strong>INNER JOIN</strong></td><td><code>FROM A INNER JOIN B ON A.id = B.id</code></td><td>Yalnızca her iki tabloda da birleştirme koşulunu sağlayan (eşleşen) satırları getirir.</td></tr>
-        <tr><td><strong>LEFT (OUTER) JOIN</strong></td><td><code>FROM A LEFT JOIN B ON A.id = B.id</code></td><td>Sol tablodaki (A) TÜM satırları korur; sağ tabloda (B) eşleşmeyen sütunlar <code>NULL</code> olur.</td></tr>
-        <tr><td><strong>RIGHT (OUTER) JOIN</strong></td><td><code>FROM A RIGHT JOIN B ON A.id = B.id</code></td><td>Sağ tablodaki (B) TÜM satırları korur; sol tabloda (A) eşleşmeyen sütunlar <code>NULL</code> olur.</td></tr>
-        <tr><td><strong>FULL (OUTER) JOIN</strong></td><td><code>FROM A FULL JOIN B ON A.id = B.id</code></td><td>Her iki tablodaki tüm satırları getirir; eşleşmeyen taraflar <code>NULL</code> ile doldurulur.</td></tr>
-        <tr><td><strong>CROSS JOIN</strong></td><td><code>FROM A CROSS JOIN B</code></td><td>Koşulsuz Kartezyen Çarpımdır. A'nın her satırını B'nin her satırıyla eşler (Satır sayısı = |A| × |B|).</td></tr>
-        <tr><td><strong>SELF JOIN</strong></td><td><code>FROM Staff e LEFT JOIN Staff m ON e.mgrId = m.id</code></td><td>Tablonun hiyerarşik ilişkiler için kendisine JOIN edilmesidir.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🔄 Alt Sorgular (Subqueries) & Özel Yüklemler</h3>
-    <ul>
-        <li><strong>Skaler Alt Sorgu:</strong> Tek bir satır ve tek bir sütun (tek bir değer) döner. <code>WHERE maas > (SELECT AVG(maas) FROM Personel)</code></li>
-        <li><strong>Tablo Alt Sorgusu:</strong> Çok satır döner. <code>WHERE bolum_id IN (SELECT bolum_id FROM Bolum WHERE sehir='Ankara')</code></li>
-        <li><strong>ANY / SOME:</strong> Alt sorgudan dönen değerlerin <strong>EN AZ BİRİNDEN</strong> büyük/küçük olmayı arar (Minimumdan büyük).</li>
-        <li><strong>ALL:</strong> Alt sorgudan dönen değerlerin <strong>TAMAMINDAN</strong> büyük/küçük olmayı arar (Maksimumdan büyük).</li>
-        <li><strong>EXISTS / NOT EXISTS:</strong> Alt sorgunun en az 1 satır üretip üretmediğini kontrol eder; ilk kayıtta TRUE döner (Hızlı ve NULL güvenlidir).</li>
-    </ul>
-</div>`
-},
-{
-  id: "sql-ddl",
-  icon: "🏗️",
-  title: "SQL Veri Tanımlama (DDL), Kısıtlar & İndeksler",
-  priority: "high",
-  subtitle: "DBMS_7 - CREATE/ALTER/DROP, Kısıtlamalar, İndeks Stratejileri, Domain & DCL",
-  content: `<div class="topic-section">
-    <h3>📌 DDL Komutları & Tablo Yönetimi</h3>
-    <div class="code-example">-- Tablo Oluşturma
-CREATE TABLE Ogrenci (
-    ogrno VARCHAR(5) NOT NULL,
-    tckimlik VARCHAR(11) NOT NULL,
-    ad NVARCHAR(30) NOT NULL,
-    soyad NVARCHAR(50) NOT NULL,
-    bolumkod VARCHAR(3),
-    kayittarih DATE DEFAULT GETDATE(),
-    CONSTRAINT pk_ogrenci PRIMARY KEY (ogrno),
-    CONSTRAINT uq_tc UNIQUE (tckimlik),
-    CONSTRAINT fk_bolum FOREIGN KEY (bolumkod) REFERENCES Bolum(bolumkod)
-        ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT ck_tc CHECK (LEN(tckimlik) = 11 AND tckimlik NOT LIKE '%[^0-9]%')
-);
-
--- Tabloyu Değiştirme (ALTER TABLE)
-ALTER TABLE Ogrenci ADD eposta VARCHAR(100);
-ALTER TABLE Ogrenci DROP COLUMN eposta;
-ALTER TABLE Ogrenci ADD CONSTRAINT ck_ad_uzunluk CHECK (LEN(ad) >= 2);
-
--- Tabloyu Silme (DROP vs TRUNCATE vs DELETE)
-DROP TABLE Ogrenci;        -- Tabloyu şeması ve verileriyle tamamen siler.
-TRUNCATE TABLE Ogrenci;    -- Tüm satırları hızlıca siler, identity sıfırlar, DDL'dir, WHERE almaz.
-DELETE FROM Ogrenci;       -- Satır satır siler, log tutar, identity sıfırlamaz, DML'dir.</div>
-</div>
-
-<div class="topic-section">
-    <h3>🛡️ Yabancı Anahtar Silme/Güncelleme Eylemleri (Referential Actions)</h3>
-    <table class="table-styled">
-        <tr><th>Seçenek</th><th>Ana Tablodan Kayıt Silindiğinde Alt Tablo Ne Yapar?</th></tr>
-        <tr><td><strong>CASCADE</strong></td><td>Ana kayda bağlı olan tüm alt kayıtları veritabanı <strong>otomatik olarak zincirleme siler</strong> (veya günceller).</td></tr>
-        <tr><td><strong>SET NULL</strong></td><td>Alt tablodaki yabancı anahtar sütununu <code>NULL</code> yapar (Sütunun NULL kabul etmesi şarttır).</td></tr>
-        <tr><td><strong>SET DEFAULT</strong></td><td>Alt tablodaki yabancı anahtar sütununu sütunun varsayılan (DEFAULT) değerine atar.</td></tr>
-        <tr><td><strong>NO ACTION / RESTRICT</strong></td><td>Bağlı alt kayıt varsa ana kaydın silinmesini <strong>engeller ve hata fırlatır</strong> (Varsayılan davranış).</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>⚡ İndeks Türleri ve Mimari Farkları</h3>
-    <table class="table-styled">
-        <tr><th>Özellik</th><th>Kümelenmiş İndeks (Clustered Index)</th><th>Kümelenmemiş İndeks (Non-Clustered Index)</th></tr>
-        <tr><td><strong>Fiziksel Sıralama</strong></td><td>Tablodaki veri satırlarını diskte fiziksel olarak indeks sırasına göre dizer (Sözlük gibi).</td><td>Verilerin fiziksel sırasını değiştirmez; ayrı bir B-Tree fihristi oluşturur (Kitap arkası indeksi gibi).</td></tr>
-        <tr><td><strong>Tablo Başına Adet</strong></td><td><strong>Yalnızca 1 adet</strong> olabilir (Tablonun diskte tek bir fiziksel sırası vardır).</td><td>Bir tabloda <strong>birden çok (999'a kadar)</strong> tanımlanabilir.</td></tr>
-        <tr><td><strong>Varsayılan Durum</strong></td><td>Tabloda <code>PRIMARY KEY</code> tanımlandığında otomatik oluşturulur.</td><td><code>UNIQUE</code> kısıtı tanımlandığında veya manuel <code>CREATE INDEX</code> ile oluşturulur.</td></tr>
-        <tr><td><strong>Performans Etkisi</strong></td><td>Aralık sorgularında (BETWEEN, <, >) ve sıralamada (ORDER BY) maksimum hız sağlar.</td><td>Noktasal aramalarda (WHERE id = 5) arama anahtarını satır işaretçisine (RID/PK) eşler.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🔐 Veri Kontrol Dili (DCL)</h3>
-    <div class="code-example">-- Yetki Verme (GRANT)
-GRANT SELECT, INSERT ON Ogrenci TO User1;
-GRANT UPDATE (maas) ON Staff TO MuhasebeUser;
-
--- Yetki Geri Alma (REVOKE)
-REVOKE INSERT ON Ogrenci FROM User1;</div>
-</div>`
-},
-{
-  id: "t-sql",
-  icon: "📜",
-  title: "T-SQL ile Programlama ve Akış Kontrolü",
-  priority: "high",
-  subtitle: "T-SQL_1 - Değişkenler, SET vs SELECT, Global Değişkenler, IF-ELSE, CASE, WHILE & TRY-CATCH",
-  content: `<div class="topic-section">
-    <h3>📌 T-SQL Nedir ve Değişken Yönetimi</h3>
-    <p>Transact-SQL (T-SQL), Microsoft SQL Server'ın standart SQL'e döngü, şart, değişken ve hata yakalama yetenekleri kazandıran prosedürel genişletmesidir.</p>
-    <div class="code-example">-- Değişken Tanımlama (DECLARE)
-DECLARE @sayac INT = 0, @ad VARCHAR(50) = 'Ahmet', @fiyat MONEY;
-
--- Değer Atama: SET vs SELECT
-SET @fiyat = 150.50;                          -- Tek değişkene sabit/ifade atar.
-SELECT @ad = ad, @fiyat = maas FROM Staff WHERE staffNo = 'SG14'; -- Çoklu atama yapar.</div>
-    <div class="info-box warning">
-        <strong>⚠️ SELECT Atama Kuralı:</strong> Eğer <code>SELECT @degisken = kolon FROM Tablo</code> sorgusu birden fazla satır döndürürse hata vermez; değişken üzerinde her satır için atama tekrarlanır ve <strong>en son satırdaki değer</strong> değişkende kalır!
-    </div>
-</div>
-
-<div class="topic-section">
-    <h3>🌐 Önemli Global (Sistem) Değişkenleri</h3>
-    <table class="table-styled">
-        <tr><th>Global Değişken</th><th>Döndürdüğü Bilgi</th></tr>
-        <tr><td><code>@@ROWCOUNT</code></td><td>En son çalıştırılan SQL ifadesinden etkilenen veya okunan satır sayısını döndürür.</td></tr>
-        <tr><td><code>@@IDENTITY</code></td><td>Mevcut oturumda herhangi bir tabloda en son üretilen otomatik artan IDENTITY değerini döndürür.</td></tr>
-        <tr><td><code>SCOPE_IDENTITY()</code></td><td>Yalnızca mevcut kod kapsamında (trigger'lar hariç) üretilen son IDENTITY değerini döndürür (Daha güvenlidir).</td></tr>
-        <tr><td><code>@@FETCH_STATUS</code></td><td>Cursor'ın son FETCH işleminin sonucunu döner (0: Başarılı, -1: Bitti/Hata, -2: Satır silinmiş).</td></tr>
-        <tr><td><code>@@ERROR</code></td><td>Son işlemde hata varsa hata numarasını, hatasız ise 0 döndürür.</td></tr>
-        <tr><td><code>@@VERSION</code></td><td>SQL Server'ın sürüm, mimari ve derleme bilgilerini döndürür.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🔀 Karar Yapıları ve Döngüler</h3>
-    <div class="code-example">-- 1. IF ... ELSE (Çok satırda BEGIN ... END zorunludur)
-IF (@puan >= 90)
-    PRINT 'AA';
-ELSE IF (@puan >= 80)
-    PRINT 'BA';
-ELSE
-BEGIN
-    PRINT 'Kaldı';
-    EXEC sp_BildirimGonder @puan;
-END;
-
--- 2. CASE ... WHEN ... THEN ... ELSE ... END
-SELECT staffNo, salary,
-    CASE 
-        WHEN salary >= 25000 THEN 'Yüksek'
-        WHEN salary >= 15000 THEN 'Orta'
-        ELSE 'Düşük'
-    END AS MaasSeviyesi
-FROM Staff;
-
--- 3. WHILE Döngüsü (BREAK ve CONTINUE)
-DECLARE @i INT = 0;
-WHILE (@i < 10)
-BEGIN
-    SET @i += 1;
-    IF (@i = 3) CONTINUE; -- 3'ü atlar, döngü başına döner
-    IF (@i = 7) BREAK;    -- 7'de döngüyü tamamen kırar ve çıkar
-    PRINT @i;
-END;</div>
-</div>
-
-<div class="topic-section">
-    <h3>🛡️ Hata Yakalama (TRY ... CATCH)</h3>
-    <div class="code-example">BEGIN TRY
-    BEGIN TRANSACTION;
-    UPDATE Hesaplar SET bakiye = bakiye - 1000 WHERE hesapNo = 'A1';
-    UPDATE Hesaplar SET bakiye = bakiye + 1000 WHERE hesapNo = 'B2';
-    COMMIT TRANSACTION;
-END TRY
-BEGIN CATCH
-    ROLLBACK TRANSACTION;
-    PRINT 'Hata Oluştu: ' + ERROR_MESSAGE();
-    PRINT 'Hata Kodu: ' + CAST(ERROR_NUMBER() AS VARCHAR(10));
-END CATCH;</div>
-</div>`
-},
-{
-  id: "stored-procedure",
-  icon: "📦",
-  title: "Saklı Yordamlar (Stored Procedures)",
-  priority: "high",
-  subtitle: "saklıYordam_SP - Parametreler, DEFAULT Değerler, OUTPUT, RETURN & Upsert Deseni",
-  content: `<div class="topic-section">
-    <h3>📌 Saklı Yordam Nedir ve Avantajları</h3>
-    <p>Stored Procedure (SP), veritabanı sunucusunda saklanan, derlenmiş (precompiled) ve adıyla çağrılabilen T-SQL kod bloklarıdır.</p>
-    <ul>
-        <li><strong>Yüksek Performans:</strong> İlk çalıştırmada derlenip Yürütme Planı (Execution Plan) önbelleğe alınır, sonraki çağrılarda çok hızlı çalışır.</li>
-        <li><strong>Ağ Trafiğinde Tasarruf:</strong> Yüzlerce satırlık sorgu yerine istemciden sunucuya sadece <code>EXEC sp_Adi</code> komutu gönderilir.</li>
-        <li><strong>Güvenlik:</strong> Kullanıcılara tablolara doğrudan SELECT/INSERT yetkisi vermeden sadece SP çalıştırma (EXEC) yetkisi verilerek veri korunur.</li>
-        <li><strong>SQL Injection Koruması:</strong> Parametreli çağrılar kullanıcı girdilerini sorgu kodu gibi değil saf veri olarak işler.</li>
-    </ul>
-</div>
-
-<div class="topic-section">
-    <h3>⚙️ Prosedür Tanımlama ve Çağırma Yöntemleri</h3>
-    <div class="code-example">-- Prosedür Tanımı (Varsayılan Parametreli)
-CREATE PROCEDURE sp_ParaTransfer
-    @gonderen VARCHAR(10),
-    @alici VARCHAR(10),
-    @tutar MONEY = 100 -- Varsayılan değer
-AS
-BEGIN
-    SET NOCOUNT ON;
-    IF (SELECT bakiye FROM Hesaplar WHERE hesapNo = @gonderen) >= @tutar
-    BEGIN
-        UPDATE Hesaplar SET bakiye = bakiye - @tutar WHERE hesapNo = @gonderen;
-        UPDATE Hesaplar SET bakiye = bakiye + @tutar WHERE hesapNo = @alici;
-        PRINT 'Transfer başarılı.';
-    END
-    ELSE
-        PRINT 'Yetersiz bakiye!';
-END;
-GO
-
--- Çağırma 1: Pozisyonel (Sıralı)
-EXEC sp_ParaTransfer 'H101', 'H202', 500;
-
--- Çağırma 2: İsimlendirilmiş (Sıra önemsiz)
-EXEC sp_ParaTransfer @alici = 'H202', @tutar = 500, @gonderen = 'H101';
-
--- Çağırma 3: Varsayılan Değerle (Tutar = 100 alınır)
-EXEC sp_ParaTransfer 'H101', 'H202';</div>
-</div>
-
-<div class="topic-section">
-    <h3>📤 OUTPUT Parametreleri ve RETURN Kullanımı</h3>
-    <div class="code-example">-- OUTPUT Parametreli SP
-CREATE PROC sp_OgrenciSayisi
-    @bolumKod VARCHAR(3),
-    @toplamOgrenci INT OUTPUT
-AS
-BEGIN
-    SELECT @toplamOgrenci = COUNT(*) FROM Ogrenci WHERE bolumkod = @bolumKod;
-END;
-GO
-
--- OUTPUT Değerini Yakalama
-DECLARE @sayi INT;
-EXEC sp_OgrenciSayisi @bolumKod = 'BLG', @toplamOgrenci = @sayi OUTPUT;
-PRINT 'Öğrenci Sayısı: ' + CAST(@sayi AS VARCHAR(10));</div>
-    <div class="info-box">
-        <strong>RETURN vs OUTPUT:</strong> <code>RETURN [sayı]</code> yalnızca tek bir tamsayı durum kodu (0 = Başarılı, 1 = Hata) dönmek için kullanılır. Veri döndürmek için <code>OUTPUT</code> parametresi kullanılır.
-    </div>
-</div>
-
-<div class="topic-section">
-    <h3>🔄 Sınav Klasiği: Upsert Deseni (Varsa Güncelle, Yoksa Ekle)</h3>
-    <div class="code-example">CREATE PROC sp_MusteriKaydetGuncelle
-    @hesapNo INT,
-    @ad VARCHAR(30),
-    @bakiye INT
-AS
-BEGIN
-    IF EXISTS (SELECT 1 FROM Musteri WHERE HesapNo = @hesapNo)
-        UPDATE Musteri SET Ad = @ad, bakiye = @bakiye WHERE HesapNo = @hesapNo;
-    ELSE
-        INSERT INTO Musteri (HesapNo, Ad, bakiye) VALUES (@hesapNo, @ad, @bakiye);
-END;</div>
-</div>`
-},
-{
-  id: "trigger",
-  icon: "⚡",
-  title: "Tetikleyiciler (Triggers) ve Olay Yönetimi",
-  priority: "high",
-  subtitle: "trigger(tetikleyici) - AFTER vs INSTEAD OF, INSERTED/DELETED Sözde Tabloları & ROLLBACK",
-  content: `<div class="topic-section">
-    <h3>📌 Tetikleyici (Trigger) Nedir ve Temel Kuralları</h3>
-    <p>Tetikleyiciler; bir tabloda veya görünümde <strong>INSERT, UPDATE, DELETE</strong> olayları gerçekleştiğinde veritabanı motoru tarafından <strong>otomatik olarak</strong> devreye sokulan özel saklı kod bloklarıdır.</p>
-    <ul>
-        <li>Dışarıdan <strong>parametre alamazlar</strong>.</li>
-        <li>Kullanıcı tarafından <strong>doğrudan EXEC ile çağrılamazlar</strong>.</li>
-        <li>Kendilerini tetikleyen DML işlemiyle aynı <strong>Transaction</strong> içinde çalışırlar; trigger içinde <code>ROLLBACK TRANSACTION</code> denilirse tetikleyen asıl işlem de dahil tüm değişiklikler iptal edilir.</li>
-    </ul>
-</div>
-
-<div class="topic-section">
-    <h3>🔄 AFTER (FOR) vs INSTEAD OF Tetikleyicileri</h3>
-    <table class="table-styled">
-        <tr><th>Özellik</th><th>AFTER (FOR) Trigger</th><th>INSTEAD OF Trigger</th></tr>
-        <tr><td><strong>Çalışma Zamanı</strong></td><td>Asıl DML işlemi yapıldıktan hemen sonra çalışır.</td><td>Asıl DML işlemi YAPILMAZ; onun yerine trigger gövdesi çalışır.</td></tr>
-        <tr><td><strong>Tanımlandığı Nesneler</strong></td><td><strong>Yalnızca fiziksel tablolarda</strong> tanımlanabilir.</td><td><strong>Hem tablolarda hem de Görünümlerde (VIEW)</strong> tanımlanabilir.</td></tr>
-        <tr><td><strong>Olay Başına Limit</strong></td><td>Bir tabloda aynı olay için <strong>birden çok</strong> olabilir.</td><td>Her olay (INSERT/UPDATE/DELETE) için <strong>en fazla 1 adet</strong> olabilir.</td></tr>
-        <tr><td><strong>Kullanım Amacı</strong></td><td>Denetim loglama, stok düşme, ikincil tablo güncelleme.</td><td>Normalde güncellenemeyen karmaşık VIEW'leri güncellenebilir kılmak.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🧠 RAM'deki Mantıksal Sözde Tablolar (INSERTED ve DELETED)</h3>
-    <table class="table-styled">
-        <tr><th>DML Olayı</th><th>INSERTED Tablosunun Durumu</th><th>DELETED Tablosunun Durumu</th></tr>
-        <tr><td><strong>INSERT</strong></td><td>Eklenen yeni satırları içerir.</td><td><strong>Boştur (Oluşmaz).</strong></td></tr>
-        <tr><td><strong>DELETE</strong></td><td><strong>Boştur (Oluşmaz).</strong></td></tr><td>Silinen kayıtların eski hallerini içerir.</td></tr>
-        <tr><td><strong>UPDATE</strong></td><td>Güncellenmiş <strong>YENİ</strong> değerleri içerir.</td><td>Değişmeden önceki <strong>ESKİ</strong> değerleri içerir.</td></tr>
-    </table>
-    <div class="info-box">
-        <strong>UPDATE Mantığı:</strong> RDBMS güncelleme işlemini fiziksel olarak <code>DELETE (eski kaydı sil) + INSERT (yeni kaydı ekle)</code> olarak ele alır. Bu yüzden UPDATE anında her iki tablo da doludur!
-    </div>
-</div>
-
-<div class="topic-section">
-    <h3>💡 Kritik Kod Örnekleri</h3>
-    <div class="code-example">-- 1. Fiyat Düşürmeyi Engelleyen AFTER UPDATE Trigger
-CREATE TRIGGER tr_FiyatKontrol ON Urun
-AFTER UPDATE
-AS
-BEGIN
-    IF EXISTS (SELECT 1 FROM inserted i JOIN deleted d ON i.urunId = d.urunId WHERE i.fiyat < d.fiyat)
-    BEGIN
-        RAISERROR('Ürün fiyatı asla düşürülemez!', 16, 1);
-        ROLLBACK TRANSACTION;
-        RETURN;
-    END
-END;
-
--- 2. Silinen Kayıtları Loglayan AFTER DELETE Trigger
-CREATE TRIGGER tr_SilineniLogla ON Notbilgi
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO Notbilgi_Log (ogrno, derskod, vizenot, finalnot, silinmetarihi)
-    SELECT ogrno, derskod, vizenot, finalnot, GETDATE() FROM deleted;
-END;</div>
-</div>`
-},
-{
-  id: "cursor",
-  icon: "🎯",
-  title: "İmleçler (Cursors) ve Satır Bazlı İşlemler",
-  priority: "high",
-  subtitle: "Cursor - 5 Adım, @@FETCH_STATUS, SCROLL Hareketleri & WHERE CURRENT OF",
-  content: `<div class="topic-section">
-    <h3>📌 İmleç (Cursor) Nedir ve Ne Zaman Kullanılır?</h3>
-    <p>SQL normalde küme tabanlıdır (set-based). Ancak her bir satırın sırayla tek tek okunup dış bir servise parametre olarak verilmesi, özel e-posta atılması veya satır bazlı karmaşık hesaplama yapılması gerektiğinde <strong>Cursor (İmleç)</strong> kullanılır.</p>
-</div>
-
-<div class="topic-section">
-    <h3>🪜 Bir Cursor'ın 5 Temel Yaşam Adımı</h3>
-    <table class="table-styled">
-        <tr><th>Adım</th><th>Komut</th><th>Açıklama</th></tr>
-        <tr><td><strong>1. Tanımlama</strong></td><td><code>DECLARE cr_adi CURSOR FOR SELECT ...</code></td><td>Cursor'ın hangi SELECT sorgusunu işleyeceğini ve özelliklerini bildirir.</td></tr>
-        <tr><td><strong>2. Açma</strong></td><td><code>OPEN cr_adi</code></td><td>Sorguyu çalıştırır, sonuç kümesini (result set) hazırlar, imleci ilk satırın öncesine koyar.</td></tr>
-        <tr><td><strong>3. Okuma</strong></td><td><code>FETCH NEXT FROM cr_adi INTO @degiskenler</code></td><td>Geçerli satırdaki verileri değişkenlere aktarır ve imleci bir sonraki satıra kaydırır.</td></tr>
-        <tr><td><strong>4. Kapatma</strong></td><td><code>CLOSE cr_adi</code></td><td>Sonuç kümesini kapatır, kilitleri serbest bırakır. Tanım bellekte kalır, tekrar <code>OPEN</code> edilebilir.</td></tr>
-        <tr><td><strong>5. Yok Etme</strong></td><td><code>DEALLOCATE cr_adi</code></td><td>Cursor tanımını ve ayrılan tüm sistem kaynaklarını bellekten tamamen siler.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🚦 @@FETCH_STATUS Değerleri ve Anlamları</h3>
-    <table class="table-styled">
-        <tr><th>Değer</th><th>Durum</th><th>Anlamı</th></tr>
-        <tr><td><strong>0</strong></td><td>✅ Başarılı</td><td>FETCH komutu başarıyla bir satır okudu ve değişkenlere atadı.</td></tr>
-        <tr><td><strong>-1</strong></td><td>🛑 Bitti / Başarısız</td><td>Sonuç kümesinin sonuna gelindi (okunacak satır kalmadı) veya FETCH başarısız oldu.</td></tr>
-        <tr><td><strong>-2</strong></td><td>⚠️ Satır Kayıp</td><td>FETCH edilmek istenen satır başka bir işlem tarafından tablodan silinmiş.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🧭 SCROLL Cursor Hareketleri & Geçerli Satırı Güncelleme</h3>
-    <div class="code-example">-- SCROLL Yönlendirme Komutları:
-FETCH NEXT FROM cr INTO @x;     -- Bir sonraki satır
-FETCH PRIOR FROM cr INTO @x;    -- Bir önceki satır
-FETCH FIRST FROM cr INTO @x;    -- En baştaki ilk satır
-FETCH LAST FROM cr INTO @x;     -- En sondaki son satır
-FETCH ABSOLUTE 5 FROM cr INTO @x; -- Baştan tam 5. satır
-FETCH RELATIVE 2 FROM cr INTO @x; -- Mevcut konumdan 2 satır ileri
-
--- Geçerli Satırı Güncelleme / Silme (WHERE CURRENT OF)
-UPDATE Staff SET salary = salary * 1.10 WHERE CURRENT OF cr;
-DELETE FROM Staff WHERE CURRENT OF cr;</div>
-</div>
-
-<div class="topic-section">
-    <h3>📝 Standart T-SQL Cursor Şablonu (Ezberlenmeli!)</h3>
-    <div class="code-example">DECLARE @sNo VARCHAR(5), @sal MONEY;
-DECLARE cr_staff CURSOR FOR SELECT staffNo, salary FROM Staff;
-
-OPEN cr_staff;
-FETCH NEXT FROM cr_staff INTO @sNo, @sal; -- 1. İlk FETCH (Döngü öncesi)
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    PRINT 'Personel: ' + @sNo + ' Maaş: ' + CAST(@sal AS VARCHAR(10));
-    
-    FETCH NEXT FROM cr_staff INTO @sNo, @sal; -- 2. Sonraki FETCH (Döngü sonunda)
-END;
-
-CLOSE cr_staff;
-DEALLOCATE cr_staff;</div>
-</div>`
-},
-{
-  id: "plsql",
-  icon: "🏛️",
-  title: "Oracle PL/SQL Mimarisi ve İleri Nesneler",
-  priority: "high",
-  subtitle: "DBMS_8 Serisi - Blok Yapısı, %TYPE / %ROWTYPE, İstisnalar, Paketler & Koleksiyonlar",
-  content: `<div class="topic-section">
-    <h3>📌 PL/SQL Blok Mimarisi</h3>
-    <p>PL/SQL (Procedural Language / SQL), Oracle veritabanının blok yapılı programlama dilidir.</p>
-    <div class="code-example">DECLARE       -- İsteğe bağlı: Değişken, sabit, imleç ve tip tanımları
-    v_ad Personel.ad%TYPE;
-    v_kayit Personel%ROWTYPE;
-BEGIN         -- ZORUNLU: Çalıştırılabilir SQL ve kontrol komutları
-    SELECT ad INTO v_ad FROM Personel WHERE id = 1;
-    DBMS_OUTPUT.PUT_LINE('Ad: ' || v_ad);
-EXCEPTION     -- İsteğe bağlı: Hata yakalama ve istisna yönetimi
-    WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Kayıt bulunamadı!');
-    WHEN TOO_MANY_ROWS THEN
-        DBMS_OUTPUT.PUT_LINE('Birden çok satır döndü!');
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Hata Kodu: ' || SQLCODE || ' - ' || SQLERRM);
-END;
-/</div>
-</div>
-
-<div class="topic-section">
-    <h3>🧬 Dinamik Veri Tipleri: %TYPE ve %ROWTYPE</h3>
-    <ul>
-        <li><strong>%TYPE:</strong> Belirtilen tablodaki sütunun veri tipini ve boyutunu dinamik olarak miras alır. Tabloda sütun tipi değişirse kod bozulmaz. (<code>v_maas Staff.salary%TYPE;</code>)</li>
-        <li><strong>%ROWTYPE:</strong> Tablonun veya imlecin TÜM satır şemasını tek bir yapılandırılmış kayıt (Record) değişkenine bağlar. (<code>v_personel Staff%ROWTYPE;</code> -> erişim: <code>v_personel.fName</code>)</li>
-    </ul>
-</div>
-
-<div class="topic-section">
-    <h3>📦 Paket (Package) Mimarisi</h3>
-    <table class="table-styled">
-        <tr><th>Bölüm</th><th>Komut</th><th>Açıklama</th></tr>
-        <tr><td><strong>Paket Bildirimi (Specification)</strong></td><td><code>CREATE PACKAGE paket_adi AS ...</code></td><td>Paketin dışarıya açık olan <strong>genel (public)</strong> arayüzüdür. Fonksiyon ve yordamların sadece imzaları yer alır.</td></tr>
-        <tr><td><strong>Paket Gövdesi (Body)</strong></td><td><code>CREATE PACKAGE BODY paket_adi AS ...</code></td><td>Yordam ve fonksiyonların asıl kaynak kodlarını ve dışarıya kapalı <strong>özel (private)</strong> öğelerini barındırır.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>📚 PL/SQL Koleksiyon Türleri</h3>
-    <table class="table-styled">
-        <tr><th>Koleksiyon Türü</th><th>Boyut / Sınır</th><th>İndeks Tipi</th><th>Kullanım Alanı</th></tr>
-        <tr><td><strong>Associative Array (Index-By Table)</strong></td><td>Dinamik sınırsız</td><td>PLS_INTEGER veya VARCHAR2</td><td>Hafızada anahtar-değer (Key-Value) sözlük yapıları</td></tr>
-        <tr><td><strong>Nested Table (İç İçe Tablo)</strong></td><td>Dinamik sınırsız</td><td>Sıralı tamsayı</td><td>Veritabanı sütununda da saklanabilen tek boyutlu dizi</td></tr>
-        <tr><td><strong>VARRAY (Variable-Size Array)</strong></td><td>Sabit üst sınırlı (n)</td><td>1'den n'e sıralı tamsayı</td><td>Eleman sayısı önceden bilinen sabit sıralı koleksiyonlar</td></tr>
-    </table>
-</div>`
-},
-{
-  id: "er-modelleme",
-  icon: "📐",
-  title: "Varlık-İlişki (ER) Modellemesi ve Tasarım",
-  priority: "medium",
-  subtitle: "DBMS_12 - Varlık Tipleri, Nitelikler, İlişkiler, Kardinalite & Dönüşüm Kuralları",
-  content: `<div class="topic-section">
-    <h3>📌 ER Diyagramı Standart Sembolleri</h3>
-    <table class="table-styled">
-        <tr><th>Kavram</th><th>ER Sembolü</th><th>Açıklama ve Örnek</th></tr>
-        <tr><td><strong>Güçlü Varlık (Strong Entity)</strong></td><td>Tek Çizgili Dikdörtgen</td><td>Kendi birincil anahtarına sahip bağımsız varlık (Örn: <code>Ogrenci</code>, <code>Personel</code>).</td></tr>
-        <tr><td><strong>Zayıf Varlık (Weak Entity)</strong></td><td>Çift Çizgili Dikdörtgen</td><td>Varlığı başka bir güçlü varlığa bağımlı olan varlık (Örn: Personelin <code>BakmaklaYukumluOlduguKisi</code>).</td></tr>
-        <tr><td><strong>Nitelik (Attribute)</strong></td><td>Tek Çizgili Oval</td><td>Varlığın bir özelliğidir (Örn: <code>Ad</code>, <code>Soyad</code>).</td></tr>
-        <tr><td><strong>Birincil Anahtar Niteliği</strong></td><td>Altı Çizili Metinli Oval</td><td>Varlığı benzersiz tanımlayan nitelik (Örn: <u><code>OgrNo</code></u>).</td></tr>
-        <tr><td><strong>Türetilen Nitelik (Derived)</strong></td><td>Kesikli Çizgili Oval</td><td>Değeri başka bir alandan hesaplanan nitelik (Örn: Doğum tarihinden hesaplanan <code>Yas</code>).</td></tr>
-        <tr><td><strong>Çok Değerli Nitelik (Multivalued)</strong></td><td>Çift Çizgili Oval</td><td>Bir varlık için birden fazla değer alabilen nitelik (Örn: <code>TelefonNumaralari</code>).</td></tr>
-        <tr><td><strong>İlişki (Relationship)</strong></td><td>Eşkenar Dörtgen (Baklava)</td><td>Varlıklar arasındaki mantıksal bağı temsil eder (Örn: <code>DersAlir</code>).</td></tr>
-        <tr><td><strong>Zorunlu Katılım (Total Participation)</strong></td><td>Çift Çizgi</td><td>Varlık kümesindeki her elemanın ilişkide yer almasının zorunlu olması.</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🔄 ER Modelini Tablolara Dönüştürme Kuralları</h3>
-    <ul>
-        <li><strong>1:N (Bire-Çok) İlişkiler:</strong> '1' tarafındaki tablonun birincil anahtarı, 'N' tarafındaki tabloya <strong>Yabancı Anahtar (FK)</strong> olarak eklenir.</li>
-        <li><strong>M:N (Çoka-Çok) İlişkiler:</strong> Doğrudan tek tabloya FK eklenemez; her iki tablonun PK'lerini FK olarak alan yeni bir <strong>Bağlantı/Kavşak Tablosu (Junction Table)</strong> oluşturulur.</li>
-        <li><strong>Çok Değerli Nitelikler:</strong> 1NF kuralını ihlal etmemek için varlığın PK'si ile birlikte ayrı bir tabloya taşınır.</li>
-    </ul>
-</div>`
-},
-{
-  id: "normalizasyon",
-  icon: "⚖️",
-  title: "Normalizasyon ve Fonksiyonel Bağımlılıklar",
-  priority: "high",
-  subtitle: "DBMS_14 - Anomaliler, 1NF, 2NF, 3NF, BCNF, 4NF, 5NF & Kayıpsız Ayrıştırma",
-  content: `<div class="topic-section">
-    <h3>📌 Normalizasyonun Amacı ve Veritabanı Anomalileri</h3>
-    <p>Normalizasyon; ilişkisel veritabanı tasarımında <strong>gereksiz veri tekrarını (redundancy)</strong> en aza indirmek ve veri tutarsızlıklarına yol açan <strong>anomalileri</strong> ortadan kaldırmak için tabloların sistematik olarak ayrıştırılması işlemidir.</p>
-    <ul>
-        <li><strong>Ekleme Anomalisi (Insertion Anomaly):</strong> Bir bilgiyi kaydedebilmek için ilgisiz başka bir bilginin de zorunlu olarak girilmesinin gerekmesi (Örn: Henüz öğrencisi olmayan yeni bir bölümün sisteme eklenememesi).</li>
-        <li><strong>Silme Anomalisi (Deletion Anomaly):</strong> Bir kaydı silerken istemeden o kayda bağlı başka kritik bilgilerin de tamamen yok olması (Örn: Ders kaydı silinen öğrencinin tüm okul kaydının silinmesi).</li>
-        <li><strong>Güncelleme Anomalisi (Update Anomaly):</strong> Tekrarlı verinin bir satırda değiştirilip diğer satırlarda unutulması sonucu veritabanının kendi içinde çelişmesi (Veri tutarsızlığı).</li>
-    </ul>
-</div>
-
-<div class="topic-section">
-    <h3>📐 Fonksiyonel Bağımlılık Türleri</h3>
-    <table class="table-styled">
-        <tr><th>Bağımlılık Türü</th><th>Matematiksel Gösterim</th><th>Açıklama ve İhlal Ettiği Form</th></tr>
-        <tr><td><strong>Tam Fonksiyonel Bağımlılık</strong></td><td><code>(A, B) -> C</code></td><td>C niteliği, bileşik anahtarın tamamına bağımlıdır; hiçbir alt parçasına bağımlı değildir.</td></tr>
-        <tr><td><strong>Kısmi Bağımlılık (Partial)</strong></td><td><code>(A, B) -> C</code> iken <code>A -> C</code></td><td>Anahtar olmayan C, bileşik anahtarın yalnızca bir parçasına (A) bağlıdır. <strong>2NF'yi ihlal eder!</strong></td></tr>
-        <tr><td><strong>Geçişli Bağımlılık (Transitive)</strong></td><td><code>A -> B</code> ve <code>B -> C</code> iken <code>A -> C</code></td><td>Anahtar olmayan C, anahtar olmayan başka bir B niteliğine bağımlıdır. <strong>3NF'yi ihlal eder!</strong></td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🏆 Normal Formlar Merdiveni (1NF - BCNF)</h3>
-    <table class="table-styled">
-        <tr><th>Normal Form</th><th>Temel Kuralı ve Şartı</th><th>Nasıl Sağlanır?</th></tr>
-        <tr><td><strong>1NF (Birinci NF)</strong></td><td>Her hücrede <strong>tek bir atomik değer</strong> olmalıdır; tekrarlayan gruplar ve liste değerler bulunamaz.</td><td>Çoklu değerler satırlara bölünür veya ayrı tabloya taşınır.</td></tr>
-        <tr><td><strong>2NF (İkinci NF)</strong></td><td>Tablo 1NF'de olmalı ve <strong>kısmi bağımlılık bulunmamalıdır</strong> (Anahtar olmayan alanlar bileşik PK'nin tamamına bağlı olmalıdır).</td><td>Kısmi bağımlı alanlar belirleyicisiyle birlikte yeni tabloya ayrılır. <br><em>⭐ Not: Tek sütunlu PK'si olan 1NF tablo otomatik olarak 2NF'dir!</em></td></tr>
-        <tr><td><strong>3NF (Üçüncü NF)</strong></td><td>Tablo 2NF'de olmalı ve <strong>geçişli bağımlılık bulunmamalıdır</strong> (Anahtar olmayan alan başka bir anahtar olmayana bağlı olamaz).</td><td>Geçişli bağımlı alanlar (B -> C) ayrı bir tabloya taşınır.</td></tr>
-        <tr><td><strong>BCNF (Boyce-Codd NF)</strong></td><td>Tablodaki her fonksiyonel bağımlılıkta (X -> Y), sol taraftaki belirleyici (X) mutlaka bir <strong>aday/süper anahtar</strong> olmalıdır.</td><td>Aday anahtar olmayan belirleyiciler ayrı tablolara ayrıştırılır.</td></tr>
-    </table>
-</div>`
-},
-{
-  id: "sql-functions",
-  icon: "⚡",
-  title: "SQL Fonksiyonları & VIEW / FUNCTION / PROCEDURE Karşılaştırması",
-  priority: "high",
-  subtitle: "sql_Functions - Metin/Tarih Fonksiyonları, UDF Türleri & Kapsamlı Karşılaştırma Matrisi",
-  content: `<div class="topic-section">
-    <h3>📊 VIEW vs FUNCTION vs PROCEDURE Karşılaştırma Matrisi (Sınavda Kesin Çıkar!)</h3>
-    <table class="table-styled">
-        <tr><th>Özellik / Kriter</th><th>Görünüm (VIEW)</th><th>Kullanıcı Fonksiyonu (UDF)</th><th>Saklı Yordam (PROCEDURE)</th></tr>
-        <tr><td><strong>Parametre Alabilir mi?</strong></td><td>❌ Hayır (Parametre alamaz)</td><td>✅ Evet (Giriş parametresi alır)</td><td>✅ Evet (IN, OUT, DEFAULT alır)</td></tr>
-        <tr><td><strong>Geriye Değer Döndürme</strong></td><td>Sanal Tablo döndürür</td><td><code>RETURNS</code> ile skaler veya tablo döner</td><td><code>OUTPUT</code> parametresi veya durum kodu döner</td></tr>
-        <tr><td><strong>Sorgu İçinde Kullanım</strong></td><td><code>SELECT ... FROM ViewAdi</code></td><td><code>SELECT dbo.fn()</code> veya <code>FROM fn()</code></td><td>❌ SELECT/FROM/WHERE içinde çağrılamaz</td></tr>
-        <tr><td><strong>Çalıştırma Yöntemi</strong></td><td>SELECT sorgusuyla çağrılır</td><td>SELECT sorgusu içinde çağrılır</td><td><code>EXEC / EXECUTE</code> ile çalıştırılır</td></tr>
-        <tr><td><strong>Veritabanını Değiştirme (DML)</strong></td><td>Basit view güncellenebilir</td><td>❌ <strong>YASAKTIR</strong> (Yan etkisiz olmalıdır)</td><td>✅ Evet (INSERT/UPDATE/DELETE serbesttir)</td></tr>
-        <tr><td><strong>Önceden Derleme (Execution Plan)</strong></td><td>Sorgu optimizasyonu yapılır</td><td>Önbelleğe alınır</td><td>✅ Evet (Tam derlenmiş yürütme planı)</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>🔤 En Çok Sorulan SQL String (Metin) Fonksiyonları</h3>
-    <table class="table-styled">
-        <tr><th>Fonksiyon</th><th>Açıklama ve Örnek</th><th>Sonuç</th></tr>
-        <tr><td><code>SUBSTRING(str, start, len)</code></td><td><code>SUBSTRING('Veritabanı', 5, 3)</code> (1 tabanlı indeksleme)</td><td><code>'tab'</code></td></tr>
-        <tr><td><code>CHARINDEX(arana, metin)</code></td><td><code>CHARINDEX('tan', 'Veritabanı')</code> (Konumunu döndürür)</td><td><code>5</code></td></tr>
-        <tr><td><code>LEFT(str, n) / RIGHT(str, n)</code></td><td><code>LEFT('Düzce', 3)</code> / <code>RIGHT('Düzce', 2)</code></td><td><code>'Düz'</code> / <code>'ce'</code></td></tr>
-        <tr><td><code>LEN(str)</code></td><td><code>LEN('VTYS Final')</code> (Karakter sayısını verir)</td><td><code>10</code></td></tr>
-        <tr><td><code>UPPER(str) / LOWER(str)</code></td><td><code>UPPER('ali')</code> / <code>LOWER('AK')</code></td><td><code>'ALİ'</code> / <code>'ak'</code></td></tr>
-        <tr><td><code>LTRIM(str) / RTRIM(str)</code></td><td>Metnin solundaki/sağındaki gereksiz boşlukları temizler.</td><td>Temiz metin</td></tr>
-        <tr><td><code>CONVERT(VARCHAR, date, 104)</code></td><td>Tarihi Alman/TR standardında nokta ile formatlar.</td><td><code>'17.08.2026'</code></td></tr>
-    </table>
-</div>`
-},
-{
-  id: "transaction",
-  icon: "🛡️",
-  title: "Transaction Yönetimi, ACID İlkeleri ve İzolasyon Seviyeleri",
-  priority: "medium",
-  subtitle: "DBMS_7 - ACID Kuralları, Eşzamanlılık Problemleri (Dirty Read, Phantom), Kilitleme & SAVEPOINT",
-  content: `<div class="topic-section">
-    <h3>📌 ACID İlkeleri (Transaction Temel Taşları)</h3>
-    <table class="table-styled">
-        <tr><th>İlke</th><th>Açılımı</th><th>Tanım ve Anlamı</th></tr>
-        <tr><td><strong>A</strong></td><td><strong>Atomicity (Bölünemezlik)</strong></td><td>'Ya hep ya hiç' kuralıdır. Transaction içindeki tüm adımlar ya eksiksiz tamamlanır (COMMIT) ya da bir hata durumunda hiç yapılmamış gibi geri alınır (ROLLBACK).</td></tr>
-        <tr><td><strong>C</strong></td><td><strong>Consistency (Tutarlılık)</strong></td><td>Transaction veritabanını bir geçerli tutarlı durumdan başka bir geçerli duruma geçirir. Tüm bütünlük kısıtları korunur.</td></tr>
-        <tr><td><strong>I</strong></td><td><strong>Isolation (Yalıtım)</strong></td><td>Eşzamanlı çalışan işlemler birbirlerinin henüz onaylanmamış ara durumlarını görmez ve birbirlerini bozmaz.</td></tr>
-        <tr><td><strong>D</strong></td><td><strong>Durability (Kalıcılık)</strong></td><td>COMMIT edilen bir işlem sistem çökse veya elektrik kesilse bile veritabanında kalıcı olarak saklanır (Transaction log garantisi).</td></tr>
-    </table>
-</div>
-
-<div class="topic-section">
-    <h3>⚠️ Eşzamanlılık Problemleri ve İzolasyon Seviyeleri</h3>
-    <table class="table-styled">
-        <tr><th>İzolasyon Seviyesi</th><th>Kirli Okuma (Dirty Read)</th><th>Tekrarlanamayan Okuma (Non-Repeatable)</th><th>Gölge Okuma (Phantom Read)</th></tr>
-        <tr><td><strong>Read Uncommitted</strong></td><td>❌ Oluşabilir</td><td>❌ Oluşabilir</td><td>❌ Oluşabilir</td></tr>
-        <tr><td><strong>Read Committed</strong> (Varsayılan)</td><td>✅ Engellenir</td><td>❌ Oluşabilir</td><td>❌ Oluşabilir</td></tr>
-        <tr><td><strong>Repeatable Read</strong></td><td>✅ Engellenir</td><td>✅ Engellenir</td><td>❌ Oluşabilir</td></tr>
-        <tr><td><strong>Serializable</strong> (En Katı)</td><td>✅ Engellenir</td><td>✅ Engellenir</td><td>✅ Engellenir</td></tr>
-    </table>
-</div>`
-}
+  {
+    "id": "vtys-mimari-temel",
+    "icon": "🏛️",
+    "title": "VTYS Mimarisi, ANSI/SPARC & Temel Kavramlar",
+    "priority": "medium",
+    "subtitle": "DBMS_1_ & Deney Föyü - Dosya Sistemleri vs VTYS, 3 Seviyeli ANSI/SPARC Mimarisi, Veri Bağımsızlığı & DBA",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 Geleneksel Dosya Sistemleri ve VTYS Karşılaştırması</h3>\n    <p>Geleneksel dosya tabanlı sistemlerde veriler işletim sistemi dosyalarında (örneğin txt, csv, dat) saklanır ve her uygulama kendi dosyasını yönetir. Bu durum büyük kurumsal yapılarda ciddi problemlere yol açmıştır. <strong>Veritabanı Yönetim Sistemi (VTYS / DBMS)</strong>, verilerin merkezi, yapılandırılmış, güvenli ve bağımsız bir şekilde tanımlanmasını, depolanmasını ve sorgulanmasını sağlayan sistem yazılımıdır.</p>\n    \n    <table class=\"table-styled\">\n        <tr><th>Kriter / Karşılaştırma</th><th>Geleneksel Dosya Sistemi</th><th>Veritabanı Yönetim Sistemi (VTYS)</th></tr>\n        <tr><td><strong>Veri Fazlalığı (Redundancy)</strong></td><td>Yüksek. Aynı veri (örn: öğrenci adresi) birden fazla departman dosyasında tekrar tekrar tutulur.</td><td>Minimum düzeyde. Veri merkezi olarak tek bir yerde tutulur, tekrarlar önlenir.</td></tr>\n        <tr><td><strong>Veri Tutarsızlığı (Inconsistency)</strong></td><td>Çok yüksek. Bir dosyada güncellenen adres diğer dosyada eski kalır (Veri uyuşmazlığı).</td><td>Engellenir. Veri tek bir kaynaktan güncellenir, tüm kullanıcılar anlık tutarlı veriyi görür.</td></tr>\n        <tr><td><strong>Veri İzolasyonu & Ayrıklığı</strong></td><td>Veriler farklı formatlardaki dosyalara dağılmıştır; birleştirmek yeni program yazmayı gerektirir.</td><td>Standart sorgu dilleri (SQL) ile ilişkili tablolar kolayca birleştirilir (JOIN).</td></tr>\n        <tr><td><strong>Eşzamanlı Erişim (Concurrency)</strong></td><td>Aynı anda birden fazla kullanıcının yazması durumunda dosya bozulur veya kilitlenir.</td><td>Gelişmiş kilit mekanizmaları (Locking) ve Transaction yönetimi ile eşzamanlı erişim tam kontrol altındadır.</td></tr>\n        <tr><td><strong>Veri Bütünlüğü (Integrity)</strong></td><td>Kısıtlar (örneğin not 0-100 arası olmalı) uygulama kodunun içine gömülmek zorundadır.</td><td>Bütünlük kısıtları (Constraints: PK, FK, CHECK) doğrudan veritabanı şemasında merkezi tanımlanır.</td></tr>\n        <tr><td><strong>Güvenlik ve Yetkilendirme</strong></td><td>Dosya düzeyinde kaba izinler verilebilir; sütun veya satır bazında gizlilik sağlanamaz.</td><td>Kullanıcı ve rol bazlı ince ayarlı yetkilendirme (GRANT/REVOKE), View'ler ve şifreleme mevcuttur.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🏗️ ANSI/SPARC 3 Düzeyli Veritabanı Mimarisi</h3>\n    <p>1975 yılında ANSI/SPARC komitesi tarafından önerilen bu mimarinin temel amacı <strong>kullanıcı uygulamaları ile fiziksel veritabanını birbirinden ayırmak (Veri Bağımsızlığı sağlamak)</strong>tır.</p>\n    \n    <div class=\"info-box\">\n        <strong>1. Dış Düzey (External Level / View Level - Görünüm Seviyesi):</strong><br>\n        Son kullanıcıların ve uygulama programlarının veriyi gördüğü seviyedir. Farklı kullanıcı gruplarına (Muhasebe, İK, Öğrenci) yalnızca ihtiyaç duydukları veriler <em>View (Görünüm)</em> yapıları aracılığıyla özelleştirilerek gösterilir. Kullanıcı, veritabanının geri kalanından izoledir.\n    </div>\n    \n    <div class=\"info-box\">\n        <strong>2. Kavramsal / Mantıksal Düzey (Conceptual Level / Logical Level):</strong><br>\n        Tüm veritabanının mantıksal yapısının eksiksiz tanımlandığı seviyedir. Hangi varlıkların (tabloların), hangi niteliklerin (sütunların), hangi ilişkilerin ve bütünlük kısıtlamalarının (PK, FK, CHECK vb.) bulunduğu burada belirlenir. Fiziksel depolama detayları (diskte nasıl saklandığı) bu seviyede yer almaz.\n    </div>\n    \n    <div class=\"info-box\">\n        <strong>3. İç / Fiziksel Düzey (Internal Level / Physical Level):</strong><br>\n        Verilerin fiziksel depolama aygıtlarında (HDD, SSD) nasıl saklandığını belirten en alt seviyedir. Veri yapıları, dosya organizasyonları (B-Tree, Hash), indeksleme teknikleri, blok boyutları, sıkıştırma ve şifreleme algoritmaları burada yer alır.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔄 Veri Bağımsızlığı (Data Independence)</h3>\n    <p>Veri bağımsızlığı, üst düzeydeki şemaları veya uygulama programlarını değiştirmek zorunda kalmadan alt düzeydeki şemaları değiştirebilme yeteneğidir.</p>\n    <ul>\n        <li><strong>Mantıksal Veri Bağımsızlığı (Logical Data Independence):</strong> Kavramsal şemada yapılan değişikliklerin (örneğin yeni bir tablo veya sütun eklenmesi, iki tablonun bölünmesi) dış şemaları (View'leri) ve mevcut uygulama programlarını etkilememesidir. Sağlanması fiziksel veri bağımsızlığına göre daha zordur.</li>\n        <li><strong>Fiziksel Veri Bağımsızlığı (Physical Data Independence):</strong> Fiziksel depolama yapısında veya indeksleme yöntemlerinde yapılan değişikliklerin (örneğin yeni bir Non-Clustered Index oluşturulması, RAID disk yapısına geçilmesi, dosya konumunun değiştirilmesi) kavramsal şemayı ve kullanıcı programlarını kesinlikle değiştirmemesidir.</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>👨‍💼 Veritabanı Yöneticisinin (DBA) Temel Görevleri</h3>\n    <ul>\n        <li><strong>Şema Tanımlama ve Değiştirme:</strong> Kavramsal ve fiziksel veritabanı şemalarının DDL komutlarıyla oluşturulması ve güncellenmesi.</li>\n        <li><strong>Depolama Yapısı ve Erişim Yöntemleri:</strong> İndekslerin tasarlanması, disk alanı yönetimi ve optimizasyon.</li>\n        <li><strong>Güvenlik ve Yetkilendirme:</strong> Kullanıcı hesaplarının açılması, rollere göre erişim haklarının (DCL: GRANT, REVOKE) verilmesi.</li>\n        <li><strong>Yedekleme ve Kurtarma (Backup & Recovery):</strong> Sistem çökmelerine, donanım arızalarına ve felaket durumlarına karşı periyodik yedek alma ve geri yükleme planlarını yönetme.</li>\n        <li><strong>Performans İzleme ve Ayarlama (Tuning):</strong> Yavaş çalışan sorguların tespiti, Execution Plan analizi ve darboğazların giderilmesi.</li>\n        <li><strong>Bütünlük Kısıtlarının Korunması:</strong> Veri tutarlılığını garanti eden kural ve tetikleyicilerin denetimi.</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚠️ Sınav Püf Noktaları ve Klasik Sorular</h3>\n    <div class=\"info-box warning\">\n        <strong>💡 Soru:</strong> Fiziksel veri bağımsızlığı mı yoksa mantıksal veri bağımsızlığı mı daha zordur?<br>\n        <strong>Cevap:</strong> <em>Mantıksal Veri Bağımsızlığı</em> çok daha zordur. Çünkü kavramsal düzeyde bir varlık veya ilişki bölündüğünde veya değiştirildiğinde, o varlığa bağlı çalışan onlarca uygulama kodunun ve dış görünümün bozulmadan kalması gelişmiş View mimarisi gerektirir.\n    </div>\n</div>"
+  },
+  {
+    "id": "iliskisel-model",
+    "icon": "🔗",
+    "title": "İlişkisel Model & Bütünlük Kuralları",
+    "priority": "medium",
+    "subtitle": "DBMS_4 - E.F. Codd (1970) İlişkisel Modeli, Tablo Yapısı, Anahtar Hiyerarşisi & 4 Bütünlük Kuralı",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 İlişkisel Modelin Doğuşu ve Matematiksel Temeli</h3>\n    <p>İlişkisel Veri Modeli, 1970 yılında <strong>Edgar Frank Codd (E.F. Codd)</strong> tarafından IBM laboratuvarlarında matematiksel küme teorisi ve birinci dereceden mantık üzerine kurulmuştur. Bu modelde tüm veriler iki boyutlu <strong>ilişkiler (relations / tablolar)</strong> şeklinde temsil edilir.</p>\n    \n    <ul>\n        <li><strong>İlişki (Relation / Tablo):</strong> Satır ve sütunlardan oluşan iki boyutlu matematiksel kümedir.</li>\n        <li><strong>Demet (Tuple / Satır / Kayıt / Record):</strong> İlişkideki tek bir varlığa ait bilgileri içeren yatay veri satırıdır.</li>\n        <li><strong>Nitelik (Attribute / Sütun / Alan / Field):</strong> Bir varlığın adlandırılmış özelliğidir (Örn: <code>ad</code>, <code>maas</code>, <code>dogum_tarihi</code>).</li>\n        <li><strong>Etki Alanı (Domain):</strong> Bir niteliğin alabileceği geçerli, atomik (bölünemez) değerler kümesidir (Örn: Vize Notu için <code>[0, 100]</code> aralığındaki tamsayılar).</li>\n        <li><strong>Derece (Degree / Arity):</strong> Bir tablodaki toplam nitelik (sütun) sayısıdır.</li>\n        <li><strong>Kardinalite (Cardinality):</strong> Bir tablodaki toplam demet (satır) sayısıdır.</li>\n    </ul>\n\n    <div class=\"info-box\">\n        <strong>📐 Matematiksel Tanım:</strong><br>\n        D₁, D₂, ..., Dₙ etki alanları olsun. Kartezyen Çarpım: D₁ × D₂ × ... × Dₙ kümesidir.<br>\n        Bir <strong>İlişki (R)</strong>, bu Kartezyen çarpım kümesinin herhangi bir alt kümesidir: <code>R ⊆ (D₁ × D₂ × ... × Dₙ)</code>.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📐 İlişkilerin (Tabloların) 5 Temel Matematiksel Özelliği</h3>\n    <ol>\n        <li><strong>Hücre Değerleri Atomiktir:</strong> Tablonun herhangi bir satır ve sütun kesişiminde (hücresinde) yalnızca TEK bir bölünemez değer bulunabilir. (Çok değerli nitelik veya dizi saklanamaz - 1NF kuralı).</li>\n        <li><strong>Nitelik İsimleri Benzersizdir:</strong> Aynı tablo içerisinde aynı isimde iki sütun bulunamaz.</li>\n        <li><strong>Niteliklerin (Sütunların) Sırası Önemsizdir:</strong> Sütunların soldan sağa diziliş sırası tablonun anlamını veya matematiksel eşitliğini değiştirmez.</li>\n        <li><strong>Demetlerin (Satırların) Sırası Önemsizdir:</strong> Satırların yukarıdan aşağıya dizilişi anlamsızdır; çünkü ilişki bir kümedir ve kümelerde sıra yoktur.</li>\n        <li><strong>Yinelenen (Duplicate) Satır Olamaz:</strong> Matematiksel küme tanımı gereği bir ilişkide birbirinin tamamen kopyası olan iki özdeş satır bulunamaz (Anahtar varlığı zorunludur).</li>\n    </ol>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔑 Anahtar (Key) Hiyerarşisi ve Türleri</h3>\n    <table class=\"table-styled\">\n        <tr><th>Anahtar Türü</th><th>Tanımı ve Özellikleri</th><th>Örnek / Sınav Notu</th></tr>\n        <tr><td><strong>Süper Anahtar (Super Key - SK)</strong></td><td>Tablodaki her bir satırı tekil (unique) olarak belirleyen herhangi bir nitelik veya nitelikler kümesidir. İçinde gereksiz, fazladan sütunlar barındırabilir.</td><td><code>(TCKimlikNo, Ad, Soyad)</code> bir süper anahtardır.</td></tr>\n        <tr><td><strong>Aday Anahtar (Candidate Key - CK)</strong></td><td>Gereksiz hiçbir nitelik içermeyen <strong>minimal süper anahtardır</strong>. Kendisinden herhangi bir sütun çıkarıldığında tekillik özelliği kaybolur. Asla NULL içeremez.</td><td><code>TCKimlikNo</code>, <code>OgrenciNo</code>, <code>Eposta</code></td></tr>\n        <tr><td><strong>Birincil Anahtar (Primary Key - PK)</strong></td><td>Aday anahtarlar arasından veritabanı tasarımcısı tarafından tablonun ana tanımlayıcısı olarak seçilen tekil anahtardır. <strong>Asla NULL olamaz ve yinelenemez!</strong></td><td><code>OgrenciNo</code></td></tr>\n        <tr><td><strong>Alternatif / İkincil Anahtar (Alternate Key - AK)</strong></td><td>Aday anahtarlar arasından birincil anahtar olarak seçilmeyen diğer aday anahtarlardır. Veritabanında <code>UNIQUE</code> kısıtı verilerek korunur.</td><td><code>TCKimlikNo</code> (Eğer PK OgrenciNo seçildiyse)</td></tr>\n        <tr><td><strong>Yabancı Anahtar (Foreign Key - FK)</strong></td><td>Bir tablodaki satırı başka bir tablonun birincil (veya tekil) anahtarına bağlayan referans sütunudur. İlişkiler arası referans bütünlüğünü sağlar. <strong>NULL değer alabilir!</strong></td><td><code>BolumKod</code> (Ogrenci tablosundaki FK, Bolum tablosunun PK'sine işaret eder)</td></tr>\n        <tr><td><strong>Bileşik Anahtar (Composite / Compound Key)</strong></td><td>Birden fazla sütunun bir araya gelerek tek bir birincil anahtar oluşturması durumudur.</td><td><code>(OgrenciNo, DersKod)</code> Notlar tablosunda.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🛡️ İlişkisel Bütünlük Kuralları (Integrity Constraints)</h3>\n    <div class=\"info-box\">\n        <strong>1. Varlık Bütünlüğü (Entity Integrity):</strong><br>\n        Temel bir ilişkinin Birincil Anahtarını (PK) oluşturan hiçbir sütun <strong>NULL (boş/bilinmeyen) DEĞER ALAMAZ</strong> ve her satırda mutlaka benzersiz olmalıdır.\n    </div>\n    <div class=\"info-box\">\n        <strong>2. Referans Bütünlüğü (Referential Integrity):</strong><br>\n        Bir yabancı anahtar (FK) değeri NULL değilse, mutlaka hedef tablodaki geçerli ve mevcut bir Birincil Anahtar değerine eşit olmalıdır. Hedefte var olmayan bir değere referans verilemez (\"Yetim kayıt / Orphan record\" oluşamaz).\n    </div>\n    <div class=\"info-box warning\">\n        <strong>3. Etki Alanı Bütünlüğü (Domain Integrity):</strong><br>\n        Her sütun yalnızca kendi etki alanında tanımlanan geçerli veri tipine, uzunluğa, formata ve CHECK kısıtlamalarına uygun atomik değerler alabilir.\n    </div>\n    <div class=\"info-box warning\">\n        <strong>4. Kurumsal / İş Kuralı Bütünlüğü (Enterprise Integrity):</strong><br>\n        Kurumun özel iş mantığını zorunlu kılan kısıtlamalardır (Örn: Maaş asgari ücretten düşük olamaz, bir müşteri en fazla 5 aktif sipariş verebilir). Trigger ve CHECK kısıtları ile zorlanır.\n    </div>\n</div>"
+  },
+  {
+    "id": "iliskisel-cebir",
+    "icon": "🧮",
+    "title": "İlişkisel Cebir & İlişkisel Hesap (Formal Query Languages)",
+    "priority": "high",
+    "subtitle": "DBMS_5 & iliskiselCebir__.docx - Semboller (σ, π, ⋈, ×, ÷, ρ, ⟕, γ), Kapanma Özelliği & SQL Karşılıkları",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 İlişkisel Cebir Nedir? Kapanma Özelliği</h3>\n    <p>İlişkisel cebir, bir veya daha fazla ilişkiyi girdi olarak alıp, girdi tablolarını değiştirmeden sonuç olarak <strong>yeni bir ilişki (tablo)</strong> üreten <strong>prosedürel (adımlı) bir sorgu dilidir</strong>.</p>\n    <div class=\"info-box success\">\n        <strong>Kapanma (Closure) Özelliği:</strong> İlişkisel cebirdeki her işlemin çıktısı yine bir ilişkisel tablodur. Bu sayede işlemler iç içe (nested) ve zincirleme olarak birleştirilebilir: <code>π_ad(σ_maas>5000(Personel))</code>.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📐 Temel ve Türetilmiş Operatörler Tablosu</h3>\n    <table class=\"table-styled\">\n        <tr><th>İşlem Adı</th><th>Sembol</th><th>Matematiksel Gösterim</th><th>SQL Eşdeğeri</th><th>Açıklama</th></tr>\n        <tr><td><strong>Seçim (Selection)</strong></td><td>σ (sigma)</td><td>σ<sub>koşul</sub>(R)</td><td><code>WHERE</code></td><td>Koşulu sağlayan satırları (yatay filtreleme) seçer. Kardinalite azalabilir, derece değişmez.</td></tr>\n        <tr><td><strong>İzdüşüm (Projection)</strong></td><td>π (pi)</td><td>π<sub>sütun1, sütun2</sub>(R)</td><td><code>SELECT DISTINCT</code></td><td>Belirtilen sütunları (dikey filtreleme) seçer, tekrarlı satırları otomatik eler. Derece değişir.</td></tr>\n        <tr><td><strong>Birleşim (Union)</strong></td><td>∪</td><td>R ∪ S</td><td><code>UNION</code></td><td>İki tablonun tüm satırlarını tekrarsız birleştirir. Tablolar <em>Birleşim Uyumlu</em> olmalıdır.</td></tr>\n        <tr><td><strong>Küme Farkı (Difference)</strong></td><td>−</td><td>R − S</td><td><code>EXCEPT / MINUS</code></td><td>R ilişkisinde bulunup S ilişkisinde bulunmayan kayıtları verir.</td></tr>\n        <tr><td><strong>Kesişim (Intersection)</strong></td><td>∩</td><td>R ∩ S = R − (R − S)</td><td><code>INTERSECT</code></td><td>Her iki tabloda da ortak bulunan satırları döndürür.</td></tr>\n        <tr><td><strong>Kartezyen Çarpım</strong></td><td>×</td><td>R × S</td><td><code>CROSS JOIN</code></td><td>Tüm olası satır çiftlerini üretir. Derece = Deg(R)+Deg(S), Kardinalite = |R| × |S|.</td></tr>\n        <tr><td><strong>Teta Birleştirme</strong></td><td>⋈<sub>θ</sub></td><td>R ⋈<sub>θ</sub> S = σ<sub>θ</sub>(R × S)</td><td><code>JOIN ... ON koşul</code></td><td>Kartezyen çarpım üzerine genel bir karşılaştırma koşulu (θ: =, &lt;, &gt;, ≤, ≥, &lt;&gt;) uygular.</td></tr>\n        <tr><td><strong>Doğal Birleştirme</strong></td><td>⋈</td><td>R ⋈ S</td><td><code>NATURAL JOIN</code></td><td>Aynı isimli sütunlarda eşitlik sağlar ve yinelenen ortak sütunu sonuçta TEKE indirir.</td></tr>\n        <tr><td><strong>Bölme (Division)</strong></td><td>÷ veya /</td><td>R ÷ S</td><td>'Tümünü içeren' sorgular</td><td>S'deki tüm değerlerle ilişkili olan R kayıtlarını bulur (Örn: Tüm dersleri alan öğrenciler).</td></tr>\n        <tr><td><strong>Yeniden Adlandırma</strong></td><td>ρ (rho)</td><td>ρ<sub>S</sub>(R) veya ρ<sub>(A1,A2)</sub>(R)</td><td><code>AS alias</code></td><td>İlişkiye veya sütunlarına yeni isim/takma ad verir.</td></tr>\n        <tr><td><strong>Yarı Birleşim (Semijoin)</strong></td><td>⋉</td><td>R ⋉ S = π<sub>R</sub>(R ⋈ S)</td><td><code>WHERE EXISTS</code></td><td>S ile eşleşen R satırlarını döndürür, ancak sonuçta sadece R'nin sütunları yer alır.</td></tr>\n        <tr><td><strong>Karşıt Birleşim (Antijoin)</strong></td><td>▷ veya ⋈̸</td><td>R ▷ S = R − (R ⋉ S)</td><td><code>WHERE NOT EXISTS</code></td><td>S ile eşleşmeyen R satırlarını döndürür.</td></tr>\n        <tr><td><strong>Sol Dış Birleştirme</strong></td><td>⟕</td><td>R ⟕ S</td><td><code>LEFT JOIN</code></td><td>R'deki tüm kayıtlar gelir, S'de eşleşmeyen sütunlar NULL ile dolar.</td></tr>\n        <tr><td><strong>Sağ Dış Birleştirme</strong></td><td>⟖</td><td>R ⟖ S</td><td><code>RIGHT JOIN</code></td><td>S'deki tüm kayıtlar gelir, R'de eşleşmeyenler NULL ile dolar.</td></tr>\n        <tr><td><strong>Tam Dış Birleştirme</strong></td><td>⟗</td><td>R ⟗ S</td><td><code>FULL OUTER JOIN</code></td><td>Her iki tablodaki tüm kayıtlar gelir, eşleşmeyen yerler NULL olur.</td></tr>\n        <tr><td><strong>Gruplama & Toplama</strong></td><td>γ (gamma)</td><td><sub>grup</sub>γ<sub>fonk(sütun)</sub>(R)</td><td><code>GROUP BY + Aggregate</code></td><td>Verileri gruplar ve SUM, COUNT, AVG gibi toplama fonksiyonlarını uygular.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>💡 Çıkmış Sınav Soruları ve Adım Adım SQL Dönüşümleri</h3>\n    \n    <div class=\"code-example\">-- Soru 1: Üretilen ('URET') tüm ürünlerin stok kodlarını ve adlarını listeleyin.\n-- SQL:\nSELECT stok_kodu, ad FROM Urun WHERE uret_satinal = 'URET';\n-- İLİŞKİSEL CEBİR:\nπ_stok_kodu, ad ( σ_uret_satinal='URET' (Urun) )</div>\n\n    <div class=\"code-example\">-- Soru 2: Yazılım bölümünde çalışan personellerin ad ve maaşlarını bulun.\n-- SQL:\nSELECT p.ad, p.maas FROM Personel p JOIN Bolum b ON p.bolum_no = b.bolum_no WHERE b.bolum_ad = 'Yazilim';\n-- İLİŞKİSEL CEBİR:\nπ_ad, maas ( σ_bolum_ad='Yazilim' (Personel ⋈_Personel.bolum_no=Bolum.bolum_no Bolum) )</div>\n\n    <div class=\"code-example\">-- Soru 3: Bölme İşlemi - 'Veritabanı' bölümündeki TÜM dersleri alan öğrencilerin adları.\n-- D = π_DersKod(σ_DersAd='Veritabanı'(Ders))\n-- İLİŞKİSEL CEBİR:\nπ_OgrAd ( (π_OgrAd, DersKod (Notlar ⋈ Ogrenci)) ÷ D )</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🎓 İlişkisel Hesap (Relational Calculus)</h3>\n    <ul>\n        <li><strong>Demet İlişkisel Hesap (Tuple Relational Calculus - TRC):</strong> Bildirimseldir (Declarative). <em>\"Nasıl elde edileceğini\"</em> değil, <em>\"Neyin istendiğini\"</em> belirtir: <code>{ t | P(t) }</code>.</li>\n        <li><strong>Etki Alanı İlişkisel Hesap (Domain Relational Calculus - DRC):</strong> Değişkenler demetler üzerinde değil, etki alanları (nitelik değerleri) üzerinde tanımlanır: <code>{ &lt;x₁, x₂, ..., xₙ&gt; | P(x₁, x₂, ..., xₙ) }</code>.</li>\n    </ul>\n</div>"
+  },
+  {
+    "id": "sql-temel",
+    "icon": "🔍",
+    "title": "SQL DQL & DML: Temel Sorgular, Filtreleme ve Gruplama",
+    "priority": "high",
+    "subtitle": "DBMS_6 & SQL Öğrenme Rehberi - Mantıksal Çalışma Sırası, WHERE, NULL Mantığı, GROUP BY & HAVING",
+    "content": "<div class=\"topic-section\">\n    <h3>⚙️ SQL Sorgusunun Mantıksal Çalışma Sırası (Logical Query Processing)</h3>\n    <p>SQL yazılırken <code>SELECT</code> ilk yazılır; ancak veritabanı motoru sorguyu çok farklı bir mantıksal sıra ile çalıştırır. Sınavlarda ve optimizasyonda en kritik konu bu sıradır:</p>\n    \n    <div class=\"code-example\">1. FROM & JOIN     --> Hangi tablolardan veri alınacak? Tablolar birleştirilir.\n2. ON              --> JOIN koşulu uygulanır.\n3. WHERE           --> Satırlar koşula göre filtrelenir (Toplama fonksiyonu KULLANILAMAZ!).\n4. GROUP BY        --> Kalan satırlar belirtilen sütunlara göre gruplanır.\n5. HAVING          --> Gruplanmış veriler filtrelenir (Toplama fonksiyonu KULLANILABİLİR!).\n6. SELECT          --> İstenen sütunlar hesaplanır ve listelenir.\n7. DISTINCT        --> Yinelenen satırlar elenir.\n8. ORDER BY        --> Sonuçlar sıralanır (ASC / DESC).\n9. TOP / OFFSET    --> Belirtilen satır adedi veya aralığı alınır.</div>\n    \n    <div class=\"info-box warning\">\n        <strong>⚠️ Hayati Sınav Tuzağı:</strong> <code>SELECT</code> aşamasında tanımlanan bir sütun takma adı (Alias - Örn: <code>SELECT maas*12 AS YillikMaas</code>), <code>WHERE</code> veya <code>HAVING</code> içinde <strong>KULLANILAMAZ</strong>! Çünkü WHERE ve HAVING adımları SELECT'ten ÖNCE çalışır! Ancak <code>ORDER BY</code> aşamasında KULLANILABİLİR çünkü ORDER BY SELECT'ten sonra çalışır.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔍 Filtreleme Operatörleri ve NULL Mantığı</h3>\n    <table class=\"table-styled\">\n        <tr><th>Operatör</th><th>Kullanım Amacı</th><th>Örnek</th></tr>\n        <tr><td><code>LIKE</code></td><td>Karakter kalıbı eşleştirme</td><td><code>ad LIKE 'A%'</code> (A ile başlayan), <code>ad LIKE '_a%'</code> (2. harfi a olan), <code>kod LIKE '[A-Z][0-9]%'</code></td></tr>\n        <tr><td><code>BETWEEN ... AND</code></td><td>Sınırlar dahil aralık kontrolü</td><td><code>maas BETWEEN 5000 AND 10000</code> (5000 ve 10000 dahildir!)</td></tr>\n        <tr><td><code>IN (...)</code></td><td>Liste içi eleman kontrolü</td><td><code>sehir IN ('Ankara', 'İzmir', 'Bursa')</code></td></tr>\n        <tr><td><code>IS NULL / IS NOT NULL</code></td><td>Bilinmeyen/boş değer kontrolü</td><td><code>WHERE mudur_id IS NULL</code> (Kesinlikle <code>= NULL</code> YAZILAMAZ!)</td></tr>\n    </table>\n\n    <div class=\"info-box danger\">\n        <strong>⚡ Üç Değerli Mantık (Three-Valued Logic - TRUE, FALSE, UNKNOWN):</strong><br>\n        SQL'de NULL bir değer değil, <em>bilinmezliktir</em>. NULL ile yapılan her türlü matematiksel ve mantıksal karşılaştırma (<code>maas = NULL</code> veya <code>maas &lt; NULL</code>) <strong>UNKNOWN (Bilinmeyen)</strong> üretir.<br>\n        <code>WHERE</code> cümlesi yalnızca sonucu <strong>TRUE</strong> olan satırları getirir, <code>FALSE</code> ve <code>UNKNOWN</code> olanları eler!\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📊 Toplama Fonksiyonları ve GROUP BY / HAVING Ayrımı</h3>\n    <ul>\n        <li><code>COUNT(*)</code>: NULL olanlar dahil tablodaki tüm satırları sayar.</li>\n        <li><code>COUNT(sutun)</code>: Yalnızca ilgili sütunda <strong>NULL olmayan</strong> satırları sayar!</li>\n        <li><code>COUNT(DISTINCT sutun)</code>: Tekrarsız ve NULL olmayan farklı değerleri sayar.</li>\n        <li><code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>: NULL değerleri hesaplamaya katmaz (ihmal eder).</li>\n    </ul>\n\n    <table class=\"table-styled\">\n        <tr><th>Karşılaştırma</th><th>WHERE</th><th>HAVING</th></tr>\n        <tr><td><strong>Çalışma Zamanı</strong></td><td>Gruplamadan (GROUP BY) ÖNCE çalışır.</td><td>Gruplamadan (GROUP BY) SONRA çalışır.</td></tr>\n        <tr><td><strong>Filtreleme Hedefi</strong></td><td>Bireysel satırları eler.</td><td>Oluşturulmuş grupları eler.</td></tr>\n        <tr><td><strong>Toplama Fonksiyonu</strong></td><td><code>WHERE AVG(maas) > 5000</code> <strong>YAZILAMAZ! (HATA)</strong></td><td><code>HAVING AVG(maas) > 5000</code> <strong>KULLANILIR!</strong></td></tr>\n    </table>\n\n    <div class=\"code-example\">-- Örnek: Çalışan sayısı 5'ten fazla olan departmanların ortalama maaşları\nSELECT bolum_id, AVG(maas) AS OrtMaas, COUNT(*) AS KisiSayisi\nFROM Personel\nWHERE durum = 'Aktif'         -- 1. Satır bazında filtreleme\nGROUP BY bolum_id             -- 2. Gruplama\nHAVING COUNT(*) > 5           -- 3. Grup bazında filtreleme\nORDER BY OrtMaas DESC;        -- 4. Sıralama</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>✏️ DML Komutları (Data Manipulation Language)</h3>\n    <div class=\"code-example\">-- 1. INSERT (Tekli ve Çoklu Ekleme)\nINSERT INTO Ogrenci (ogrno, ad, soyad, bolumkod) \nVALUES ('12345', 'Ahmet', 'Yılmaz', 'YAZ'),\n       ('12346', 'Ayşe', 'Demir', 'BLG');\n\n-- 2. INSERT INTO ... SELECT (Başka tablodan kopyalayarak ekleme)\nINSERT INTO ArsivPersonel (id, ad, maas)\nSELECT id, ad, maas FROM Personel WHERE cikis_tarihi IS NOT NULL;\n\n-- 3. UPDATE (Güncelleme)\nUPDATE Personel \nSET maas = maas * 1.15, prim = 500 \nWHERE bolum_id = 2; -- DİKKAT: WHERE unutulursa tüm tablo güncellenir!\n\n-- 4. DELETE (Silme)\nDELETE FROM Personel WHERE cikis_tarihi < '2020-01-01'; -- WHERE unutulursa tüm satırlar silinir!</div>\n</div>"
+  },
+  {
+    "id": "sql-joins-subqueries",
+    "icon": "🔀",
+    "title": "JOIN Türleri, Alt Sorgular (Subqueries) & Küme Operatörleri",
+    "priority": "high",
+    "subtitle": "DBMS_6 & Deney Föyü - INNER/OUTER/CROSS/SELF JOIN, Correlated Subqueries, EXISTS vs IN & UNION/EXCEPT",
+    "content": "<div class=\"topic-section\">\n    <h3>🔀 JOIN Türleri ve Karşılaştırma Matrisi</h3>\n    <table class=\"table-styled\">\n        <tr><th>JOIN Türü</th><th>Dönen Satırlar</th><th>Eşleşmeyen Satırların Durumu</th></tr>\n        <tr><td><strong>INNER JOIN</strong></td><td>Yalnızca iki tabloda da birleştirme koşulunu sağlayan ortak satırlar.</td><td>Eşleşmeyen satırlar sonuç kümesine dahil edilmez.</td></tr>\n        <tr><td><strong>LEFT (OUTER) JOIN</strong></td><td>Sol tablodaki TÜM satırlar + Sağ tablodan eşleşen satırlar.</td><td>Sağ tabloda eşleşme yoksa o tablonun sütunları <code>NULL</code> gelir.</td></tr>\n        <tr><td><strong>RIGHT (OUTER) JOIN</strong></td><td>Sağ tablodaki TÜM satırlar + Sol tablodan eşleşen satırlar.</td><td>Sol tabloda eşleşme yoksa sol sütunlar <code>NULL</code> gelir.</td></tr>\n        <tr><td><strong>FULL (OUTER) JOIN</strong></td><td>Her iki tablodaki TÜM satırlar.</td><td>Eşleşmeyen tüm alanlar <code>NULL</code> ile doldurulur.</td></tr>\n        <tr><td><strong>CROSS JOIN</strong></td><td>İki tablonun Kartezyen Çarpımı (Her satır diğerinin her satırıyla eşleşir).</td><td>Koşul almaz. Satır sayısı = <code>|R| × |S|</code>.</td></tr>\n        <tr><td><strong>SELF JOIN</strong></td><td>Bir tablonun kendisiyle birleştirilmesidir (Farklı alias'lar verilir).</td><td>Hiyerarşik yapılarda kullanılır (Örn: Personel tablosunda personel ile müdürünü eşleştirme).</td></tr>\n    </table>\n\n    <div class=\"code-example\">-- SELF JOIN Örneği: Her personelin kendi müdürünün adıyla listelenmesi\nSELECT p.ad AS CalisanAd, m.ad AS MudurAd\nFROM Personel p\nLEFT JOIN Personel m ON p.mudur_id = m.personel_id;</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔍 Alt Sorgular (Subqueries) ve Türleri</h3>\n    <ul>\n        <li><strong>1. Skalar Alt Sorgu (Scalar Subquery):</strong> Tam olarak tek bir satır ve tek bir sütun (tek bir atomik değer) döndürür. <code>=</code>, <code>&gt;</code>, <code>&lt;</code> gibi standart karşılaştırma operatörleriyle kullanılır.\n            <div class=\"code-example\">SELECT ad, maas FROM Personel WHERE maas > (SELECT AVG(maas) FROM Personel);</div>\n        </li>\n        <li><strong>2. Çok Satırlı Alt Sorgu (Multi-Row Subquery):</strong> Tek sütunlu birden fazla satır döndürür. <code>IN</code>, <code>NOT IN</code>, <code>ANY / SOME</code>, <code>ALL</code> operatörleriyle kullanılır.\n            <ul>\n                <li><code>&gt; ALL (alt_sorgu)</code>: Alt sorgudaki EN BÜYÜK değerden bile daha büyük olanlar.</li>\n                <li><code>&gt; ANY (alt_sorgu)</code>: Alt sorgudaki EN KÜÇÜK değerden büyük olan herhangi biri.</li>\n            </ul>\n        </li>\n        <li><strong>3. İlişkili Alt Sorgu (Correlated Subquery):</strong> İçteki alt sorgu dıştaki sorgunun geçerli satırına referans verir. Dış sorgunun her bir satırı için iç sorgu baştan tekrar tekrar çalıştırılır.\n            <div class=\"code-example\">-- Kendi departmanının ortalama maaşından fazla alan personeller\nSELECT p1.ad, p1.maas, p1.bolum_id\nFROM Personel p1\nWHERE p1.maas > (SELECT AVG(p2.maas) FROM Personel p2 WHERE p2.bolum_id = p1.bolum_id);</div>\n        </li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚡ EXISTS vs IN Karşılaştırması</h3>\n    <table class=\"table-styled\">\n        <tr><th>Kriter</th><th>IN Operatörü</th><th>EXISTS Operatörü</th></tr>\n        <tr><td><strong>Çalışma Mantığı</strong></td><td>Alt sorgunun tüm sonuç listesini belleğe çeker ve aranan değerin bu listede olup olmadığını test eder.</td><td>Alt sorguda koşulu sağlayan EN AZ BİR satır bulunduğu anda aramayı durdurur (Kısa devre / Short-circuit TRUE döner).</td></tr>\n        <tr><td><strong>NULL Tehlikesi</strong></td><td><code>NOT IN</code> alt sorgusunda tek bir NULL değer dönerse tüm sonuç <strong>BOŞ (UNKNOWN)</strong> döner!</td><td><code>NOT EXISTS</code> NULL değerlerden etkilenmez, güvenle çalışır.</td></tr>\n        <tr><td><strong>Performans</strong></td><td>Küçük sabit listelerde hızlıdır.</td><td>Büyük ilişkili alt sorgularda ve indeksli tablolarda çok daha performanslıdır.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📦 Küme Operatörleri (Set Operators)</h3>\n    <ul>\n        <li><code>UNION</code>: İki sorgunun sonuçlarını birleştirir ve <strong>yinelenen satırları eler (DISTINCT yapar - yavaştır)</strong>.</li>\n        <li><code>UNION ALL</code>: İki sorgunun sonuçlarını yinelenenleri elemeden olduğu gibi alt alta ekler (<strong>Çok daha hızlıdır!</strong>).</li>\n        <li><code>INTERSECT</code>: Her iki sorgunun da ortak ürettiği satırları verir.</li>\n        <li><code>EXCEPT</code> (Oracle'da <code>MINUS</code>): Birinci sorguda olup ikinci sorguda bulunmayan satırları verir.</li>\n    </ul>\n    <div class=\"info-box\">\n        <strong>⚠️ Küme Uyumluluğu Kuralı:</strong> Küme operatörleriyle birleştirilen tüm sorguların SELECT listesindeki <strong>sütun sayısı aynı</strong> ve karşılıklı sütunların <strong>veri tipleri uyumlu</strong> olmalıdır!\n    </div>\n</div>"
+  },
+  {
+    "id": "sql-ddl",
+    "icon": "🏗️",
+    "title": "SQL DDL, Veri Tipleri, Kısıtlar, VIEW & İndeksler",
+    "priority": "high",
+    "subtitle": "DBMS_7 & Deney Föyü - CREATE/ALTER TABLE, Kısıtlar (Cascade), TRUNCATE vs DELETE, VIEW (CHECK OPTION) & B-Tree İndeks",
+    "content": "<div class=\"topic-section\">\n    <h3>🧱 Veri Tanımlama Dili (DDL) ve Tablo Kısıtları (Constraints)</h3>\n    <div class=\"code-example\">CREATE TABLE Bolum (\n    bolum_id INT IDENTITY(1,1) PRIMARY KEY,\n    bolum_kod VARCHAR(3) CONSTRAINT ck_bolumkod CHECK (bolum_kod LIKE '[A-Z][A-Z][A-Z]') UNIQUE,\n    bolum_ad NVARCHAR(50) NOT NULL\n);\n\nCREATE TABLE Personel (\n    personel_id INT PRIMARY KEY,\n    tc_no CHAR(11) CONSTRAINT uq_tc UNIQUE NOT NULL,\n    ad NVARCHAR(30) NOT NULL,\n    soyad NVARCHAR(30) NOT NULL,\n    maas DECIMAL(10,2) CONSTRAINT ck_maas CHECK (maas >= 0),\n    bolum_id INT,\n    CONSTRAINT fk_personel_bolum FOREIGN KEY (bolum_id) \n        REFERENCES Bolum(bolum_id)\n        ON DELETE SET NULL\n        ON UPDATE CASCADE\n);</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🛡️ Referans Eylemleri (Referential Actions - ON DELETE / ON UPDATE)</h3>\n    <ul>\n        <li><code>CASCADE</code>: Ana tablodaki satır silindiğinde/güncellendiğinde, ona bağlı tüm yabancı anahtarlı satırlar da otomatik olarak silinir / güncellenir.</li>\n        <li><code>SET NULL</code>: Ana tablodaki satır silindiğinde/güncellendiğinde, bağlı FK sütunları <code>NULL</code> yapılır.</li>\n        <li><code>SET DEFAULT</code>: Ana satır silindiğinde bağlı FK sütununa varsayılan (DEFAULT) değeri atanır.</li>\n        <li><code>NO ACTION / RESTRICT</code>: Varsayılandır. Eğer bağlı kayıt varsa ana satırın silinmesine/güncellenmesine <strong>İZİN VERMEZ, HATA FIRLATIR</strong>.</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔥 DELETE vs TRUNCATE vs DROP Derin Karşılaştırması</h3>\n    <table class=\"table-styled\">\n        <tr><th>Kriter</th><th>DELETE</th><th>TRUNCATE TABLE</th><th>DROP TABLE</th></tr>\n        <tr><td><strong>Komut Türü</strong></td><td>DML (Veri İşleme)</td><td>DDL (Veri Tanımlama)</td><td>DDL (Veri Tanımlama)</td></tr>\n        <tr><td><strong>Silme Yöntemi</strong></td><td>Satır satır siler; her satırı Transaction Log'a tek tek yazar.</td><td>Veri sayfalarını (Data Pages) deallocate eder; minimalist log tutar.</td><td>Tablo şemasını, verilerini ve indekslerini tamamen siler.</td></tr>\n        <tr><td><strong>WHERE Şartı</strong></td><td>Kullanılabilir (İstenen satırlar seçilip silinebilir).</td><td><strong>KULLANILAMAZ!</strong> Tüm tabloyu boşaltır.</td><td>Kullanılamaz.</td></tr>\n        <tr><td><strong>Hız / Performans</strong></td><td>Büyük tablolarda çok yavaştır.</td><td><strong>Son derece hızlıdır</strong> (Sayfa bazlı serbest bırakma).</td><td>Hızlıdır.</td></tr>\n        <tr><td><strong>DML Trigger</strong></td><td>DELETE trigger'larını tetikler.</td><td><strong>Trigger'ları TETİKLEMEZ!</strong></td><td>Trigger'ları tetiklemez.</td></tr>\n        <tr><td><strong>IDENTITY Sıfırlama</strong></td><td>Sayacı sıfırlamaz; kaldığı sayıdan devam eder.</td><td>IDENTITY sayacını başlangıç değerine (Seed) <strong>sıfırlar</strong>.</td><td>Tablo yok olur.</td></tr>\n        <tr><td><strong>FK Kısıtı Varlığında</strong></td><td>Başka tablo tarafından FK ile referans verilse bile çalışabilir (bağlı satır yoksa).</td><td>Başka tablo tarafından referans veriliyorsa <strong>ÇALIŞMAZ (HATA VERİR)</strong>.</td><td>Referans varsa silinmez.</td></tr>\n        <tr><td><strong>ROLLBACK Edilebilirlik</strong></td><td>Transaction içinde geri alınabilir.</td><td>Transaction içinde <strong>GERİ ALINABİLİR (ROLLBACK)</strong> (Yaygın sınav yanılgısı!).</td><td>Transaction içinde geri alınabilir.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>👓 Görünümler (Views) ve WITH CHECK OPTION</h3>\n    <p>View, veritabanında fiziksel olarak veri saklamayan, saklanmış bir SELECT sorgusundan oluşan <strong>sanal tablodur</strong>.</p>\n    <ul>\n        <li><strong>Kullanım Amaçları:</strong> Güvenlik (kullanıcıdan hassas maaş vb. sütunları gizleme), karmaşık JOIN sorgularını basitleştirme, veri bağımsızlığı sağlama.</li>\n        <li><strong>WITH CHECK OPTION:</strong> View üzerinden yapılan <code>INSERT</code> veya <code>UPDATE</code> işlemlerinin, View'in <code>WHERE</code> koşuluna uymasını zorunlu kılar. Koşula uymayan ekleme/güncellemeleri reddeder!</li>\n    </ul>\n\n    <div class=\"code-example\">CREATE VIEW vw_YazilimPersonelleri AS\nSELECT personel_id, ad, soyad, bolum_id, maas\nFROM Personel\nWHERE bolum_id = 1\nWITH CHECK OPTION; -- Bu view üzerinden bolum_id <> 1 olan kayıt EKLENEMEZ!</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🌲 İndeksler (Indexes): Clustered vs Non-Clustered Index</h3>\n    <p>İndeksler, tablodaki satırlara çok daha hızlı erişebilmek için B-Tree (Dengeli Ağaç) yapısında oluşturulan özel arama veri yapılarıdır.</p>\n    \n    <table class=\"table-styled\">\n        <tr><th>Özellik</th><th>Kümeli İndeks (Clustered Index)</th><th>Kümesiz İndeks (Non-Clustered Index)</th></tr>\n        <tr><td><strong>Fiziksel Sıralama</strong></td><td>Tablodaki fiziksel satırların diskteki diziliş sırasını belirler.</td><td>Fiziksel veriyi sıralamaz; ayrı bir alfabetik fihrist/işaretçi ağacı tutar.</td></tr>\n        <tr><td><strong>Tablo Başına Adet</strong></td><td><strong>Her tabloda EN FAZLA 1 TANE olabilir!</strong></td><td>Bir tabloda çok sayıda (SQL Server'da 999'a kadar) olabilir.</td></tr>\n        <tr><td><strong>Yaprak Düğümler (Leaf Nodes)</strong></td><td>Yaprak düğümler tablonun <strong>gerçek veri sayfalarının (Data Pages) ta kendisidir</strong>.</td><td>Yaprak düğümler, asıl satıra işaret eden <strong>satır işaretçileri (Row Pointer / Clustered Key)</strong> içerir.</td></tr>\n        <tr><td><strong>Otomatik Oluşma</strong></td><td>Tabloda <code>PRIMARY KEY</code> tanımlandığında varsayılan olarak Clustered Index oluşturulur.</td><td><code>UNIQUE</code> kısıtı tanımlandığında varsayılan olarak Non-Clustered Index oluşturulur.</td></tr>\n    </table>\n</div>"
+  },
+  {
+    "id": "t-sql",
+    "icon": "⚡",
+    "title": "T-SQL Programlama, Değişkenler, Akış Kontrolü & Geçici Tablolar",
+    "priority": "high",
+    "subtitle": "T-SQL_1 & DBMS_8 - Değişkenler, SET vs SELECT, @@ROWCOUNT, @@IDENTITY, IF/WHILE & Geçici Tablo Türleri",
+    "content": "<div class=\"topic-section\">\n    <h3>💻 T-SQL Programlama Temelleri ve Değişkenler</h3>\n    <p>Transact-SQL (T-SQL), Microsoft SQL Server tarafından kullanılan, standart SQL'e değişkenler, koşul blokları, döngüler ve hata yakalama yetenekleri ekleyen prosedürel uzantıdır.</p>\n    \n    <div class=\"code-example\">-- Değişken Tanımlama ve Değer Atama\nDECLARE @vize INT = 70, @final INT = 85;\nDECLARE @ortalama FLOAT;\n\n-- SET ile atama: Tek bir değişkene değer atar\nSET @ortalama = (@vize * 0.4) + (@final * 0.6);\n\n-- SELECT ile atama: Aynı anda birden fazla değişkene tablodan değer atayabilir\nDECLARE @ad NVARCHAR(30), @maas MONEY;\nSELECT @ad = ad, @maas = maas FROM Personel WHERE personel_id = 101;</div>\n\n    <table class=\"table-styled\">\n        <tr><th>Karşılaştırma</th><th>SET Komutu</th><th>SELECT Komutu</th></tr>\n        <tr><td><strong>Standartlık</strong></td><td>ANSI SQL standardıdır.</td><td>T-SQL uzantısıdır.</td></tr>\n        <tr><td><strong>Aynı Anda Atama</strong></td><td>Tek seferde yalnızca 1 değişkene atama yapabilir.</td><td>Tek bir deyimde birden fazla değişkene değer atayabilir.</td></tr>\n        <tr><td><strong>Sorgu Sonucu Çok Satır Dönerse</strong></td><td><strong>HATA FIRLATIR</strong> (Subquery returned more than 1 value).</td><td>Hata vermez; <strong>en son satırdaki değeri</strong> değişkene yazar (riskli!).</td></tr>\n        <tr><td><strong>Sorgu Sonucu 0 Satır Dönerse</strong></td><td>Değişkenin değerini <code>NULL</code> yapar.</td><td>Değişkenin <strong>eski değerini KORUR</strong>, değiştirmez.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🌐 Kritik Sistem Değişkenleri (Global Variables)</h3>\n    <ul>\n        <li><code>@@ROWCOUNT</code>: En son çalıştırılan SQL ifadesinden etkilenen (okunan, güncellenen, silinen veya eklenen) toplam satır sayısını döndürür.</li>\n        <li><code>@@IDENTITY</code>: Geçerli bağlantıda (tüm kapsamlarda ve tetikleyiciler dahil) üretilen en son IDENTITY (otomatik artan) değerini döndürür.</li>\n        <li><code>SCOPE_IDENTITY()</code>: <strong>(ÖNERİLEN)</strong> Yalnızca geçerli kod bloğu (scope) içinde üretilen son identity değerini döndürür; trigger'ların ürettiği değerlerden etkilenmez.</li>\n        <li><code>IDENT_CURRENT('TabloAdi')</code>: Belirtilen tabloda herhangi bir kullanıcı/oturum tarafından üretilen son identity değerini verir.</li>\n        <li><code>@@ERROR</code>: Son çalıştırılan ifadenin hata kodunu döner (Hata yoksa 0 döner).</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔀 Karar ve Döngü Yapıları (IF-ELSE, WHILE, CASE)</h3>\n    <div class=\"code-example\">-- IF - ELSE ve BEGIN - END Blokları\nDECLARE @stok INT;\nSELECT @stok = stok_miktari FROM Urunler WHERE urun_id = 5;\n\nIF @stok &lt; 10\nBEGIN\n    PRINT 'Kritik stok seviyesi! Acil sipariş verilmeli.';\n    UPDATE Urunler SET siparis_durum = 'Verildi' WHERE urun_id = 5;\nEND\nELSE\nBEGIN\n    PRINT 'Stok seviyesi yeterli: ' + CAST(@stok AS VARCHAR(10));\nEND;\n\n-- WHILE Döngüsü (BREAK ve CONTINUE ile)\nDECLARE @sayac INT = 1;\nWHILE @sayac &lt;= 10\nBEGIN\n    IF @sayac = 5\n    BEGIN\n        SET @sayac = @sayac + 1;\n        CONTINUE; -- 5'i atla\n    END;\n    IF @sayac = 9 BREAK; -- 9'da döngüyü tamamen sonlandır\n    \n    PRINT 'Adım: ' + CAST(@sayac AS VARCHAR(5));\n    SET @sayac = @sayac + 1;\nEND;</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🛡️ Hata Yönetimi: TRY - CATCH Blokları</h3>\n    <div class=\"code-example\">BEGIN TRY\n    BEGIN TRANSACTION;\n        UPDATE Hesaplar SET bakiye = bakiye - 500 WHERE hesap_no = 'A1';\n        UPDATE Hesaplar SET bakiye = bakiye + 500 WHERE hesap_no = 'B2';\n    COMMIT TRANSACTION;\n    PRINT 'Transfer başarıyla tamamlandı.';\nEND TRY\nBEGIN CATCH\n    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;\n    PRINT 'Hata Oluştu!';\n    PRINT 'Hata No: ' + CAST(ERROR_NUMBER() AS VARCHAR(10));\n    PRINT 'Hata Mesajı: ' + ERROR_MESSAGE();\nEND CATCH;</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📦 Geçici Tablolar, Tablo Değişkenleri ve CTE Karşılaştırması</h3>\n    <table class=\"table-styled\">\n        <tr><th>Yapı</th><th>Tanımlama Sözdizimi</th><th>Kapsam ve Yaşam Süresi</th><th>Fiziksel Depolama</th></tr>\n        <tr><td><strong>Yerel Geçici Tablo</strong></td><td><code>CREATE TABLE #GeciciTablo (...)</code></td><td>Yalnızca oluşturan oturumda (session) görünür. Oturum kapanınca silinir.</td><td><code>tempdb</code> veritabanında fiziksel diskte saklanır. İndeks alabilir.</td></tr>\n        <tr><td><strong>Global Geçici Tablo</strong></td><td><code>CREATE TABLE ##GlobalTablo (...)</code></td><td>Tüm kullanıcılar ve bağlantılar görebilir. Oluşturan oturum kapanınca silinir.</td><td><code>tempdb</code> veritabanında saklanır.</td></tr>\n        <tr><td><strong>Tablo Değişkeni</strong></td><td><code>DECLARE @TabloVar TABLE (...)</code></td><td>Yalnızca tanımlandığı batch/fonksiyon içinde yaşar. <strong>Rollback'ten ETKİLENMEZ!</strong></td><td>Bellekte (RAM) ve gerektiğinde tempdb'de saklanır. Küçük verilerde çok hızlıdır.</td></tr>\n        <tr><td><strong>CTE (Ortak Tablo İfadesi)</strong></td><td><code>WITH CteAdi AS (SELECT ...)</code></td><td>Yalnızca kendisini takip eden tek bir sorgu (SELECT/INSERT/UPDATE) boyunca yaşar.</td><td>Bellekte anlık işletilir. <strong>Özyinelemeli (Recursive) sorguları destekler!</strong></td></tr>\n    </table>\n</div>"
+  },
+  {
+    "id": "stored-procedure",
+    "icon": "⚙️",
+    "title": "Saklı Yordamlar (Stored Procedures - SP)",
+    "priority": "high",
+    "subtitle": "saklıYordam_SP.pdf, DBMS_8 & Deney Föyü - Pre-compiled Mimari, OUTPUT Parametreleri, Güvenlik & Sınav Kodları",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 Saklı Yordam (Stored Procedure) Nedir? Mimarisi</h3>\n    <p>Saklı Yordam (Stored Procedure), veritabanı sunucusunda derlenmiş (pre-compiled) olarak saklanan, parametre alabilen, iş kurallarını ve SQL komutlarını içeren programatik veri tabanı nesnesidir.</p>\n    \n    <div class=\"info-box success\">\n        <strong>🚀 Stored Procedure Kullanmanın 4 Temel Avantajı:</strong><br>\n        1. <strong>Üstün Performans (Hız):</strong> İlk çalıştırıldığında Parse edilir, Optimize edilir ve Derlenmiş Yürütme Planı (Execution Plan) sunucu önbelleğine (Buffer Cache) alınır. Sonraki çağrılarda derlenmeden doğrudan önbellekten ışık hızında çalışır.<br>\n        2. <strong>Ağ Trafiğini Azaltma:</strong> İstemciden sunucuya yüzlerce satırlık SQL komutu göndermek yerine yalnızca <code>EXEC sp_Adi 1, 2</code> komutu gönderilir.<br>\n        3. <strong>Güvenlik ve SQL Injection Koruması:</strong> Kullanıcılara tablolara doğrudan erişim yetkisi vermek yerine sadece SP çalıştırma yetkisi (<code>GRANT EXECUTE</code>) verilir. Parametreli yapısı sayesinde zararlı SQL kodlarının enjekte edilmesini (SQL Injection) kesin olarak engeller.<br>\n        4. <strong>Modülerlik ve Bakım Kolaylığı:</strong> İş mantığı tek bir merkezde güncellenir; istemci uygulamaları yeniden derleyip dağıtmaya gerek kalmaz.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📝 Stored Procedure Sözdizimi ve Parametre Türleri</h3>\n    <div class=\"code-example\">CREATE PROCEDURE sp_OgrenciNotGuncelle\n    @ogr_no VARCHAR(10),            -- Giriş Parametresi (Input)\n    @ders_kod VARCHAR(10),          -- Giriş Parametresi\n    @vize_not INT = 0,              -- Varsayılan Değerli Parametre\n    @final_not INT = 0,             -- Varsayılan Değerli Parametre\n    @yeni_ortalama FLOAT OUTPUT     -- Çıkış Parametresi (Output)\nAS\nBEGIN\n    SET NOCOUNT ON; -- Ağ trafiğini azaltır (etkilenen satır mesajını kapatır)\n    \n    -- Notu güncelle\n    UPDATE NotBilgi \n    SET vizenot = @vize_not, finalnot = @final_not,\n        ortalama = (@vize_not * 0.4) + (@final_not * 0.6)\n    WHERE ogrno = @ogr_no AND derskod = @ders_kod;\n    \n    -- Çıkış parametresine değeri ata\n    SELECT @yeni_ortalama = ortalama \n    FROM NotBilgi \n    WHERE ogrno = @ogr_no AND derskod = @ders_kod;\n    \n    RETURN 0; -- Başarı durum kodu döner\nEND;</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚡ Stored Procedure Çalıştırma (EXEC / EXECUTE)</h3>\n    <div class=\"code-example\">-- SP'yi Çağırma ve OUTPUT Değerini Alma\nDECLARE @sonuc FLOAT;\n\n-- Parametre isimleriyle çağırma (Sıra bağımsızdır):\nEXEC sp_OgrenciNotGuncelle \n    @ogr_no = '12345', \n    @ders_kod = 'VTYS101', \n    @vize_not = 80, \n    @final_not = 90, \n    @yeni_ortalama = @sonuc OUTPUT;\n\nPRINT 'Hesaplanan Yeni Ortalama: ' + CAST(@sonuc AS VARCHAR(10));</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚠️ RETURN vs OUTPUT Parametresi Sınav Farkı</h3>\n    <table class=\"table-styled\">\n        <tr><th>Özellik</th><th>RETURN Komutu</th><th>OUTPUT Parametresi</th></tr>\n        <tr><td><strong>Dönüş Veri Tipi</strong></td><td><strong>Yalnızca TAMSAYI (INTEGER)</strong> durum/hata kodu döndürebilir!</td><td>Her türlü SQL veri tipini (VARCHAR, DATE, FLOAT, DECIMAL vb.) döndürebilir.</td></tr>\n        <tr><td><strong>Dönen Değer Sayısı</strong></td><td>Tek bir SP çağrısında yalnızca <strong>1 adet</strong> değer dönebilir.</td><td>Tek bir SP içinde <strong>istediğiniz sayıda (birden çok)</strong> OUTPUT parametresi dönebilir.</td></tr>\n        <tr><td><strong>Temel Amacı</strong></td><td>İşlemin başarı durumunu (0: Başarılı, >0: Hata Kodu) bildirmek.</td><td>İşlem sonucunda üretilen verileri dışarı aktarmak.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>💡 Çıkmış Sınav Sorusu: Bakiye Kontrollü Para Transferi SP'si</h3>\n    <div class=\"code-example\">-- Soru: Hesaplar arası para transferi yapan, gönderen hesabın bakiyesi yetersizse\n-- işlemi engelleyip hata mesajı veren SP'yi yazınız.\nCREATE PROCEDURE sp_ParaTransferi\n    @GonderenHesap VARCHAR(10),\n    @AliciHesap VARCHAR(10),\n    @Tutar MONEY\nAS\nBEGIN\n    SET NOCOUNT ON;\n    DECLARE @MevcutBakiye MONEY;\n    \n    SELECT @MevcutBakiye = bakiye FROM Hesaplar WHERE hesap_no = @GonderenHesap;\n    \n    IF @MevcutBakiye IS NULL\n    BEGIN\n        PRINT 'Gönderen hesap bulunamadı!';\n        RETURN -1;\n    END;\n    \n    IF @MevcutBakiye >= @Tutar\n    BEGIN\n        BEGIN TRANSACTION;\n            UPDATE Hesaplar SET bakiye = bakiye - @Tutar WHERE hesap_no = @GonderenHesap;\n            UPDATE Hesaplar SET bakiye = bakiye + @Tutar WHERE hesap_no = @AliciHesap;\n        COMMIT TRANSACTION;\n        PRINT 'Transfer başarıyla gerçekleşti.';\n        RETURN 0;\n    END\n    ELSE\n    BEGIN\n        PRINT 'Yetersiz Bakiye! İşlem iptal edildi.';\n        RETURN -2;\n    END;\nEND;</div>\n</div>"
+  },
+  {
+    "id": "sql-functions",
+    "icon": "📐",
+    "title": "Kullanıcı Tanımlı Fonksiyonlar (User-Defined Functions - UDF)",
+    "priority": "high",
+    "subtitle": "sql_Functions.pdf, DBMS_8 & Deney Föyü - Skalar, Inline TVF, Multi-Statement TVF & SP vs Fonksiyon 6 Kritik Fark",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 Kullanıcı Tanımlı Fonksiyon (UDF) Nedir? Neden İhtiyaç Duyulur?</h3>\n    <p>Kullanıcı tanımlı fonksiyonlar (UDF), SQL Server ve diğer VTYS'lerde hesaplama mantığını tek bir yerde toplayıp <strong>SELECT, WHERE, HAVING, JOIN</strong> ifadelerinin içinde doğrudan çağırabilmemizi sağlayan programatik nesnelerdir.</p>\n    \n    <div class=\"info-box\">\n        <strong>💡 Neden View veya Stored Procedure Yetmez?</strong><br>\n        • View'ler dışarıdan parametre <strong>ALAMAZLAR</strong>; ancak fonksiyonlar parametre alır!<br>\n        • Stored Procedure'ler bir <code>SELECT</code> sorgusunun <code>WHERE</code> veya <code>FROM</code> kısmında doğrudan <strong>KULLANILAMAZLAR</strong>; ancak fonksiyonlar sorgu içinde rahatça çağrılır.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🏷️ 3 Temel Fonksiyon Türü ve Kod Örnekleri</h3>\n    \n    <h4>1. Skalar Fonksiyonlar (Scalar Functions)</h4>\n    <p>Girdi parametrelerini alıp sonuçta tek bir skalar değer (INT, VARCHAR, MONEY, FLOAT vb.) döndürür.</p>\n    <div class=\"code-example\">CREATE FUNCTION dbo.fn_KdvDahilFiyat\n    (@Fiyat MONEY, @KdvOrani FLOAT = 0.20)\nRETURNS MONEY\nAS\nBEGIN\n    DECLARE @Sonuc MONEY;\n    SET @Sonuc = @Fiyat * (1 + @KdvOrani);\n    RETURN @Sonuc;\nEND;\n\n-- Çağrılışı (DİKKAT: Skalar fonksiyonlarda şema adı 'dbo.' yazılması ZORUNLUDUR!):\nSELECT urun_ad, fiyat, dbo.fn_KdvDahilFiyat(fiyat, 0.20) AS KdvliFiyat \nFROM Urunler \nWHERE dbo.fn_KdvDahilFiyat(fiyat, 0.20) > 1000;</div>\n\n    <h4>2. Satır İçi Tablo Değerli Fonksiyonlar (Inline Table-Valued Functions)</h4>\n    <p>Sonuç olarak bir tablo döndürür. Gövdesinde <code>BEGIN ... END</code> <strong>YOKTUR!</strong> Tek bir <code>RETURN (SELECT ...)</code> ifadesinden oluşur. Parametreli View gibi çalışır ve optimize edici tarafından doğrudan sorgu planına dahil edildiği için son derece performanslıdır.</p>\n    <div class=\"code-example\">CREATE FUNCTION dbo.fn_BolumPersonelleri (@BolumId INT)\nRETURNS TABLE\nAS\nRETURN (\n    SELECT personel_id, ad, soyad, maas, ise_giris_tarihi\n    FROM Personel\n    WHERE bolum_id = @BolumId\n);\n\n-- Çağrılışı (Tablo gibi FROM içinde kullanılır, dbo. zorunlu değildir):\nSELECT * FROM fn_BolumPersonelleri(3) WHERE maas > 15000;</div>\n\n    <h4>3. Çok Deyimli Tablo Değerli Fonksiyonlar (Multi-Statement TVF)</h4>\n    <p>Gövdesinde bir tablo değişkeni tanımlar (<code>RETURNS @Tablo TABLE (...)</code>), <code>BEGIN ... END</code> blokları içinde karmaşık döngüler, koşullar çalıştırıp tablo değişkenini doldurur ve sonuçta bu tabloyu döndürür.</p>\n    <div class=\"code-example\">CREATE FUNCTION dbo.fn_OgrenciDurumRaporu (@DersKod VARCHAR(10))\nRETURNS @Rapor TABLE (\n    OgrNo VARCHAR(10),\n    Ortalama FLOAT,\n    Durum VARCHAR(20)\n)\nAS\nBEGIN\n    INSERT INTO @Rapor\n    SELECT ogrno, ortalama,\n           CASE WHEN ortalama >= 50 THEN 'GEÇTİ' ELSE 'KALDI' END\n    FROM NotBilgi\n    WHERE derskod = @DersKod;\n    \n    RETURN;\nEND;</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔥 Stored Procedure (SP) ile Fonksiyon (UDF) Arasındaki 6 Kritik Sınav Farkı</h3>\n    <table class=\"table-styled\">\n        <tr><th>Karşılaştırma Kriteri</th><th>Stored Procedure (SP)</th><th>Kullanıcı Tanımlı Fonksiyon (UDF)</th></tr>\n        <tr><td><strong>1. Dönüş Değeri Zorunluluğu</strong></td><td>Değer döndürmek zorunda DEĞİLDİR (0 veya N adet dönebilir).</td><td><strong>MUTLAKA tek bir değer veya tablo döndürmek ZORUNDADIR!</strong></td></tr>\n        <tr><td><strong>2. Sorgu İçinde Kullanılabilirlik</strong></td><td><code>SELECT</code>, <code>WHERE</code>, <code>JOIN</code> içinde <strong>DOĞRUDAN KULLANILAMAZ!</strong> <code>EXEC</code> ile çağrılır.</td><td><code>SELECT</code>, <code>WHERE</code>, <code>HAVING</code>, <code>JOIN</code> içinde doğrudan çağrılabilir.</td></tr>\n        <tr><td><strong>3. DML İzni (Veritabanı Değişikliği)</strong></td><td>Kalıcı tablolarda <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> yapabilir; veritabanı durumunu değiştirebilir.</td><td>Kalıcı tablolarda <strong>DML YASAKTIR!</strong> Yalnızca lokal tablo değişkenine yazabilir, veritabanı durumunu değiştiremez.</td></tr>\n        <tr><td><strong>4. Transaction Yönetimi</strong></td><td><code>BEGIN TRANSACTION</code>, <code>COMMIT</code>, <code>ROLLBACK</code> blokları kullanabilir.</td><td>Transaction komutları <strong>KULLANAMAZ!</strong></td></tr>\n        <tr><td><strong>5. Çıkış (OUTPUT) Parametresi</strong></td><td><code>OUTPUT</code> parametreleri tanımlanabilir.</td><td><code>OUTPUT</code> parametresi <strong>ALAMAZ!</strong> Sadece giriş parametresi alır.</td></tr>\n        <tr><td><strong>6. Çağırma Biçimi</strong></td><td><code>EXEC sp_Ad parametreler</code></td><td><code>SELECT dbo.fn_Ad(parametreler)</code></td></tr>\n    </table>\n</div>"
+  },
+  {
+    "id": "trigger",
+    "icon": "⚡",
+    "title": "Tetikleyiciler (Triggers)",
+    "priority": "high",
+    "subtitle": "trigger(tetikleyici).pdf, DBMS_8_2 & Deney Föyü - AFTER/INSTEAD OF, inserted/deleted Tabloları & Sınav Senaryoları",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 Tetikleyici (Trigger) Nedir? Çalışma Prensibi</h3>\n    <p>Tetikleyici (Trigger), tablolarda veya görünümlerde belirli bir olay (INSERT, UPDATE, DELETE veya DDL olayları) gerçekleştiğinde <strong>otomatik olarak veritabanı motoru tarafından devreye sokulan</strong> özel saklı yordam türüdür. Doğrudan <code>EXEC</code> ile çağrılamazlar; olay tabanlı (event-driven) çalışırlar.</p>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🏷️ Tetikleyici Türleri</h3>\n    <div class=\"info-box\">\n        <strong>1. AFTER / FOR Triggers (Sonradan Çalışan Tetikleyiciler):</strong><br>\n        Olay (INSERT/UPDATE/DELETE) gerçekleştikten, tüm kısıtlamalar (Constraints) kontrol edilip doğrulandıktan sonra çalışır. <strong>Yalnızca temel tablolarda tanımlanabilir</strong> (View'lerde AFTER trigger tanımlanamaz).\n    </div>\n    <div class=\"info-box warning\">\n        <strong>2. INSTEAD OF Triggers (Yerine Çalışan Tetikleyiciler):</strong><br>\n        Olayın ASIL İŞLEMİNİN YERİNE çalışır! Yani asıl INSERT/UPDATE/DELETE komutu icra edilmez; onun yerine tetikleyicinin gövdesindeki T-SQL komutları icra edilir.<br>\n        <strong>Kritik Sınav Özelliği:</strong> Hem tablolarda hem de <strong>Görünümlerde (Views)</strong> tanımlanabilir. Birden fazla tablodan oluşan ve doğrudan güncellenemeyen (non-updatable) View'leri güncellenebilir kılmak için <code>INSTEAD OF Trigger</code> kullanılır!\n    </div>\n    <div class=\"info-box\">\n        <strong>3. DDL Triggers:</strong><br>\n        <code>CREATE_TABLE</code>, <code>ALTER_TABLE</code>, <code>DROP_TABLE</code> gibi DDL komutlarında sunucu veya veritabanı düzeyinde tetiklenir (Tablo silinmesini engellemek veya şema değişikliklerini loglamak için).\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🪄 Sanal Bellek Tabloları: inserted ve deleted Tabloları (Magic Tables)</h3>\n    <p>Tetikleyiciler çalışırken SQL Server arka planda RAM'de iki geçici sanal tablo oluşturur: <code>inserted</code> ve <code>deleted</code>. Bu tabloların şeması tetikleyicinin bağlı olduğu tablonun şemasıyla birebir aynıdır.</p>\n    \n    <table class=\"table-styled\">\n        <tr><th>DML İşlemi</th><th><code>inserted</code> Tablosunun Durumu</th><th><code>deleted</code> Tablosunun Durumu</th><th>Açıklama</th></tr>\n        <tr><td><strong>INSERT</strong></td><td><strong>YENİ eklenen satırları</strong> içerir.</td><td><strong>BOŞTUR</strong> (Hiçbir satır yoktur).</td><td>Yeni kayıtlar inserted tablosundadır.</td></tr>\n        <tr><td><strong>DELETE</strong></td><td><strong>BOŞTUR</strong>.</td><td><strong>SİLİNEN eski satırları</strong> içerir.</td><td>Silinen kayıtlar deleted tablosundan okunabilir.</td></tr>\n        <tr><td><strong>UPDATE</strong></td><td>Güncelleme sonrası <strong>YENİ değerleri</strong> içerir.</td><td>Güncelleme öncesi <strong>ESKİ değerleri</strong> içerir.</td><td>UPDATE işlemi mantıksal olarak \"Eski satırı sil (deleted) + Yeni satırı ekle (inserted)\" işlemidir!</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚠️ Tetikleyicilerde Hayati Sınav Kuralları ve Tuzaklar</h3>\n    <ul>\n        <li><strong>Çok Satırlı İşlem Tuzağı (Multi-row Statement):</strong> Tetikleyici tek satırlık işlemde de, 10.000 satırlık toplu INSERT işleminde de <strong>YALNIZCA BİR KEZ ÇALIŞIR</strong> (Statement-level trigger). Bu yüzden tetikleyici içinde <code>SELECT @x = sutun FROM inserted</code> yazmak HATALIDIR! Mutlaka <code>JOIN inserted</code> veya <code>JOIN deleted</code> kullanılmalıdır!</li>\n        <li><code>UPDATE(sutun_adi)</code> Fonksiyonu: Belirli bir sütunun güncellenip güncellenmediğini kontrol etmek için IF bloğunda <code>IF UPDATE(maas)</code> şeklinde kullanılır.</li>\n        <li><code>ROLLBACK TRANSACTION</code>: Tetikleyici içinde bir iş kuralı ihlali tespit edildiğinde çağrılırsa, tetikleyiciyi ateşleyen ana DML işlemi tamamen iptal edilir ve geri alınır.</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>💡 Çıkmış Sınav Senaryoları ve Çözümlü Kodlar</h3>\n    \n    <div class=\"code-example\">-- Senaryo 1: Silinen müşterileri otomatik olarak 'Musteri_Log' tablosuna arşivleyen Trigger\nCREATE TRIGGER trg_MusteriSilindiLog\nON Musteri\nAFTER DELETE\nAS\nBEGIN\n    SET NOCOUNT ON;\n    INSERT INTO Musteri_Log (musteri_id, ad, soyad, silinme_tarihi, silen_kullanici)\n    SELECT musteri_id, ad, soyad, GETDATE(), SUSER_SNAME()\n    FROM deleted; -- Silinen kayıtlar deleted tablosundan toplu çekilir\nEND;</div>\n\n    <div class=\"code-example\">-- Senaryo 2: Stok miktarından fazla satış yapılmasını engelleyen Trigger\nCREATE TRIGGER trg_SatisKontrol\nON Satislar\nAFTER INSERT\nAS\nBEGIN\n    SET NOCOUNT ON;\n    -- Eğer satılan miktar stoktan fazlaysa işlemi iptal et\n    IF EXISTS (\n        SELECT 1 \n        FROM inserted i \n        JOIN Urunler u ON i.urun_id = u.urun_id \n        WHERE i.adet > u.stok_miktari\n    )\n    BEGIN\n        RAISERROR ('Yetersiz stok! Satış işlemi gerçekleştirilemez.', 16, 1);\n        ROLLBACK TRANSACTION;\n        RETURN;\n    END;\n    \n    -- Stok yeterliyse stok miktarını düş\n    UPDATE u\n    SET u.stok_miktari = u.stok_miktari - i.adet\n    FROM Urunler u\n    JOIN inserted i ON u.urun_id = i.urun_id;\nEND;</div>\n</div>"
+  },
+  {
+    "id": "cursor",
+    "icon": "🎯",
+    "title": "İmleçler (Cursors)",
+    "priority": "high",
+    "subtitle": "Cursor.pptx, DBMS_8 & Deney Föyü - Satır Satır (RBAR) İşlem, 6 Aşamalı Yaşam Döngüsü, @@FETCH_STATUS & Türler",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 İmleç (Cursor) Mantığı: RBAR vs Set-Based</h3>\n    <p>İlişkisel veritabanları doğası gereği <strong>küme tabanlı (Set-Based)</strong> çalışır; yani tek bir sorguyla binlerce satır aynı anda işlenir. Ancak bazen her bir satır üzerinde ayrı ayrı karmaşık döngüler, koşullar veya dış sistem çağrıları yapılması gerekir. Bir SELECT sorgusunun sonuç kümesindeki satırları <strong>satır satır (Row-By-Agonizing-Row - RBAR)</strong> gezinmeye yarayan mekanizmaya <strong>İmleç (Cursor)</strong> denir.</p>\n    \n    <div class=\"info-box warning\">\n        <strong>⚠️ İmleçlerin Dezavantajları:</strong> İmleçler sunucu belleğinde (RAM) kaynak tüketir, kilitleri uzun süre tutarak eşzamanlılığı düşürür ve küme tabanlı SQL'e göre çok daha yavaştır. Bu yüzden yalnızca başka alternatif olmadığında tercih edilmelidir.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔄 6 Aşamalı İmleç Yaşam Döngüsü (Cursor Lifecycle)</h3>\n    <ol>\n        <li><strong>1. DECLARE CURSOR:</strong> İmlecin adı ve gezeceği SELECT sorgusu tanımlanır.</li>\n        <li><strong>2. OPEN:</strong> İmleç açılır, SELECT sorgusu çalıştırılır ve sonuç kümesi belleğe alınır; gösterici ilk satırın öncesine konumlanır.</li>\n        <li><strong>3. FETCH NEXT:</strong> İlk satır okunur ve değerler <code>INTO @degiskenler</code> ile değişkenlere atanır.</li>\n        <li><strong>4. WHILE @@FETCH_STATUS = 0:</strong> Döngü başlatılır; satır işlenir ve döngü sonunda bir sonraki satırı okumak için tekrar <code>FETCH NEXT</code> çağrılır.</li>\n        <li><strong>5. CLOSE:</strong> İmleç kapatılır, veri seti ve kilitler serbest bırakılır (ancak imleç tanımı hafızadadır, tekrar <code>OPEN</code> yapılabilir).</li>\n        <li><strong>6. DEALLOCATE:</strong> İmleç referansı bellekten tamamen silinir.</li>\n    </ol>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚙️ @@FETCH_STATUS Değerleri ve Anlamları</h3>\n    <table class=\"table-styled\">\n        <tr><th>Dönen Değer</th><th>Durum Anlamı</th><th>Döngü Davranışı</th></tr>\n        <tr><td><code>0</code></td><td><strong>Başarılı!</strong> Satır başarıyla okundu ve değişkenlere yüklendi.</td><td>Döngü devam eder (<code>WHILE @@FETCH_STATUS = 0</code>).</td></tr>\n        <tr><td><code>-1</code></td><td><strong>Başarısız / Sona Gelindi!</strong> Okunacak başka satır kalmadı veya imleç sınırlarının dışına çıkıldı.</td><td>Döngüden çıkılır.</td></tr>\n        <tr><td><code>-2</code></td><td><strong>Satır Kayıp / Silinmiş!</strong> Okunmak istenen satır başka bir kullanıcı tarafından silinmiş.</td><td>Döngüden çıkılır.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>💻 Eksiksiz İmleç Kod Şablonu (Çıkmış Sınav Sorusu)</h3>\n    <div class=\"code-example\">-- Soru: Personel tablosundaki çalışanların maaşlarını kıdem yıllarına göre\n-- satır satır inceleyip güncelleyen T-SQL imlecini yazınız.\nDECLARE @id INT, @maas MONEY, @yil INT;\n\n-- 1. İmleci Tanımla\nDECLARE cur_MaasGuncelle CURSOR FOR\nSELECT personel_id, maas, DATEDIFF(YEAR, ise_giris, GETDATE())\nFROM Personel;\n\n-- 2. İmleci Aç\nOPEN cur_MaasGuncelle;\n\n-- 3. İlk Satırı Oku\nFETCH NEXT FROM cur_MaasGuncelle INTO @id, @maas, @yil;\n\n-- 4. Döngü ile Tüm Satırları Gez\nWHILE @@FETCH_STATUS = 0\nBEGIN\n    IF @yil >= 10\n        UPDATE Personel SET maas = @maas * 1.20 WHERE personel_id = @id;\n    ELSE IF @yil >= 5\n        UPDATE Personel SET maas = @maas * 1.10 WHERE personel_id = @id;\n    \n    -- Bir sonraki satıra geç (DİKKAT: Unutulursa sonsuz döngüye girer!)\n    FETCH NEXT FROM cur_MaasGuncelle INTO @id, @maas, @yil;\nEND;\n\n-- 5. İmleci Kapat\nCLOSE cur_MaasGuncelle;\n\n-- 6. Bellekten Tamamen Temizle\nDEALLOCATE cur_MaasGuncelle;</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🧭 İmleç Türleri ve SCROLL Seçenekleri</h3>\n    <ul>\n        <li><code>FAST_FORWARD</code>: Yalnızca ileri yönlü okuma yapan, salt okunur (read-only) ve en yüksek performanslı imleç türüdür.</li>\n        <li><code>STATIC</code>: Verilerin anlık bir kopyasını tempdb'ye alır. Diğer kullanıcıların yaptığı değişiklikleri görmez.</li>\n        <li><code>DYNAMIC</code>: Tablodaki tüm ekleme, silme ve güncellemeleri anlık olarak imlece yansıtır.</li>\n        <li><code>SCROLL</code>: İki yönlü serbest gezinmeyi sağlar. Desteklediği FETCH komutları:\n            <ul>\n                <li><code>FETCH FIRST</code>: İlk satıra gider.</li>\n                <li><code>FETCH LAST</code>: Son satıra gider.</li>\n                <li><code>FETCH PRIOR</code>: Bir önceki satıra döner.</li>\n                <li><code>FETCH ABSOLUTE n</code>: Baştan n. sıradaki satıra doğrudan gider.</li>\n                <li><code>FETCH RELATIVE n</code>: Geçerli konumdan n satır ileri/geri gider.</li>\n            </ul>\n        </li>\n    </ul>\n</div>"
+  },
+  {
+    "id": "plsql",
+    "icon": "🏛️",
+    "title": "Oracle PL/SQL Programlama & Paketler",
+    "priority": "high",
+    "subtitle": "DBMS_8, DBMS_8_1, DBMS_8_2 & Deney Föyü - Blok Yapısı, %TYPE, %ROWTYPE, Cursor FOR Loop, Exceptions & Packages",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 PL/SQL Temel Blok Mimarisi</h3>\n    <p>PL/SQL (Procedural Language/SQL), Oracle veritabanının SQL'e prosedürel programlama yetenekleri kazandıran blok yapılı dilidir.</p>\n    \n    <div class=\"code-example\">DECLARE\n    -- 1. Bildirim Bölümü (İsteğe Bağlı): Değişkenler, sabitler, imleçler, istisnalar\n    v_ad Personel.ad%TYPE;\n    v_maas Personel.maas%TYPE;\nBEGIN\n    -- 2. Yürütme Bölümü (Zorunlu): SQL ve PL/SQL ifadeleri\n    SELECT ad, maas INTO v_ad, v_maas FROM Personel WHERE id = 101;\n    DBMS_OUTPUT.PUT_LINE('Personel: ' || v_ad || ' - Maaş: ' || v_maas);\nEXCEPTION\n    -- 3. İstisna Yakalama Bölümü (İsteğe Bağlı): Hata işleme kodları\n    WHEN NO_DATA_FOUND THEN\n        DBMS_OUTPUT.PUT_LINE('Belirtilen ID ile kayıt bulunamadı!');\n    WHEN TOO_MANY_ROWS THEN\n        DBMS_OUTPUT.PUT_LINE('Sorgu birden fazla satır döndürdü!');\n    WHEN OTHERS THEN\n        DBMS_OUTPUT.PUT_LINE('Bilinmeyen Hata: ' || SQLERRM);\nEND;\n/</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🏷️ Dinamik Veri Nitelikleri: %TYPE ve %ROWTYPE</h3>\n    <table class=\"table-styled\">\n        <tr><th>Nitelik</th><th>Kullanım Amacı</th><th>Örnek Tanımlama</th><th>Avantajı</th></tr>\n        <tr><td><code>%TYPE</code></td><td>Bir tablonun belirli bir sütununun veya başka bir değişkenin veri tipini dinamik olarak miras alır.</td><td><code>v_maas Personel.maas%TYPE;</code></td><td>Tablodaki sütunun veri tipi (örn: NUMBER(8,2) -> NUMBER(10,2)) değiştiğinde PL/SQL kodunu değiştirmek gerekmez.</td></tr>\n        <tr><td><code>%ROWTYPE</code></td><td>Bir tablonun, görünümün veya imlecin <strong>tüm satır yapısını (tüm sütunlarını)</strong> içeren bir Kayıt (Record) değişkeni oluşturur.</td><td><code>emp_rec Personel%ROWTYPE;</code></td><td>Tüm satır tek bir değişken içinde <code>emp_rec.ad</code>, <code>emp_rec.maas</code> şeklinde kolayca taşınır.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔄 PL/SQL Döngüleri ve İmleç FOR Döngüsü (Cursor FOR Loop)</h3>\n    <div class=\"info-box success\">\n        <strong>🚀 İmleç FOR Döngüsü (Cursor FOR Loop):</strong><br>\n        Oracle PL/SQL'in en zarif yapılarından biridir. İmleci otomatik olarak <code>OPEN</code> yapar, her adımda <code>FETCH</code> eder, kayıt değişkenini otomatik tanımlar ve veri bittiğinde (<code>%NOTFOUND</code>) otomatik olarak <code>CLOSE</code> eder!\n    </div>\n    \n    <div class=\"code-example\">-- İmleç FOR Döngüsü ile Tüm Personelleri Listeleme\nBEGIN\n    FOR rec IN (SELECT ad, soyad, maas FROM Personel WHERE bolum_id = 10)\n    LOOP\n        DBMS_OUTPUT.PUT_LINE(rec.ad || ' ' || rec.soyad || ' -> ' || rec.maas);\n    END LOOP;\nEND;\n/</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🛡️ Ön Tanımlı İstisnalar ve Özel Hata Fırlatma</h3>\n    <ul>\n        <li><code>NO_DATA_FOUND</code>: <code>SELECT INTO</code> ifadesi hiçbir satır bulamadığında fırlatılır.</li>\n        <li><code>TOO_MANY_ROWS</code>: <code>SELECT INTO</code> ifadesi birden fazla satır döndürdüğünde fırlatılır (SELECT INTO tek satır bekler!).</li>\n        <li><code>ZERO_DIVIDE</code>: Sıfıra bölme hatası yapıldığında.</li>\n        <li><code>DUP_VAL_ON_INDEX</code>: Birincil anahtar (PK) veya UNIQUE sütuna yinelenen değer girilmeye çalışıldığında.</li>\n        <li><code>RAISE_APPLICATION_ERROR(hata_kodu, mesaj)</code>: Kullanıcı tanımlı hata fırlatır. Hata kodları <strong>-20000 ile -20999</strong> aralığında olmak zorundadır!</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📦 PL/SQL Paketleri (Packages): Spec vs Body</h3>\n    <p>Paketler, birbiriyle ilişkili prosedürleri, fonksiyonları, değişkenleri ve imleçleri tek bir çatı altında toplayan nesne yönelimli modüler yapılardır.</p>\n    <ul>\n        <li><strong>Paket Tanımı (Package Specification - Spec):</strong> Paketin dış dünyaya açılan arayüzüdür (Header). Sadece dışarıdan çağrılabilecek fonksiyon ve prosedürlerin imzaları yer alır.</li>\n        <li><strong>Paket Gövdesi (Package Body):</strong> Spec'te tanımlanan fonksiyon ve prosedürlerin gerçek kaynak kodlarını ve sadece pakete özel (private) yardımcı elemanları içerir.</li>\n    </ul>\n</div>"
+  },
+  {
+    "id": "er-modelleme",
+    "icon": "📊",
+    "title": "Varlık-İlişki (ER) Modellemesi & İlişkisel Şemaya Dönüşüm",
+    "priority": "medium",
+    "subtitle": "DBMS_12 - ER Sembolleri, Zayıf Varlık, Min-Max Notasyonu & 7 Adımda İlişkisel Şemaya Dönüşüm",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 ER Modeli Temel Yapı Taşları ve Notasyonlar</h3>\n    <table class=\"table-styled\">\n        <tr><th>Kavram</th><th>ER Şema Sembolü</th><th>Tanım ve Açıklama</th></tr>\n        <tr><td><strong>Güçlü Varlık (Entity)</strong></td><td>Tek Çizgili Dikdörtgen</td><td>Kendi birincil anahtarına sahip, bağımsız olarak var olabilen nesne kümesi (Örn: <code>Ogrenci</code>, <code>Bolum</code>).</td></tr>\n        <tr><td><strong>Zayıf Varlık (Weak Entity)</strong></td><td><strong>Çift Çizgili Dikdörtgen</strong></td><td>Kendi başına bir birincil anahtara sahip olmayan; varlığı başka bir güçlü varlığa (Sahip Varlık) bağlı olan varlık (Örn: Personelin <code>BakmaklaYukumluOlduguKisi</code>).</td></tr>\n        <tr><td><strong>Tanımlayıcı İlişki</strong></td><td><strong>Çift Çizgili Baklava (Elmas)</strong></td><td>Zayıf varlığı güçlü sahibine bağlayan ilişki.</td></tr>\n        <tr><td><strong>Basit Nitelik</strong></td><td>Tek Çizgili Elips</td><td>Tekil ve bölünemez özellik (Örn: <code>maas</code>).</td></tr>\n        <tr><td><strong>Bileşik Nitelik</strong></td><td>Ağaç şeklinde dallanan Elipsler</td><td>Daha küçük alt parçalara bölünebilen nitelik (Örn: <code>Adres -> Il, Ilce, Sokak</code> veya <code>AdSoyad -> Ad, Soyad</code>).</td></tr>\n        <tr><td><strong>Çok Değerli Nitelik</strong></td><td><strong>Çift Çizgili Elips</strong></td><td>Aynı varlık için birden fazla değer alabilen nitelik (Örn: <code>TelefonNumaralari</code>, <code>YabanciDiller</code>).</td></tr>\n        <tr><td><strong>Türetilmiş Nitelik</strong></td><td><strong>Kesikli Çizgili Elips</strong></td><td>Veritabanında fiziksel saklanmayıp başka bir nitelikten hesaplanan özellik (Örn: <code>Yas</code> niteliği <code>DogumTarihi</code>'nden türetilir).</td></tr>\n        <tr><td><strong>Anahtar Nitelik</strong></td><td>İçindeki yazı <strong>Altı Çizili</strong> Elips</td><td>Varlıkları tekil tanımlayan anahtar (Örn: <code><u>OgrenciNo</u></code>).</td></tr>\n        <tr><td><strong>Kısmi Anahtar (Discriminator)</strong></td><td>İçindeki yazı <strong>Kesikli Altı Çizili</strong> Elips</td><td>Zayıf varlığın kayıtlarını kendi içinde ayırt etmeye yarayan anahtar parçası.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔗 Katılım Kısıtları ve Kardinalite Oranları</h3>\n    <ul>\n        <li><strong>Kardinalite Oranları:</strong> <code>1:1</code> (Bire-Bir), <code>1:N</code> (Bire-Çok), <code>M:N</code> (Çoka-Çok).</li>\n        <li><strong>Tam Katılım (Total Participation / Zorunlu - Çift Çizgi):</strong> Varlık kümesindeki her bir varlık ilişkide mutlaka yer almalıdır (Örn: Her bölümün mutlaka bir yöneticisi olmalı).</li>\n        <li><strong>Kısmi Katılım (Partial Participation / İsteğe Bağlı - Tek Çizgi):</strong> Varlıkların bir kısmı ilişkide yer almayabilir (Örn: Her çalışan yönetici olmak zorunda değildir).</li>\n        <li><strong>Min-Max Notasyonu (min..max):</strong> <code>(0..1)</code>, <code>(1..1)</code>, <code>(0..N)</code>, <code>(1..N)</code> şeklinde minimum ve maksimum katılımı kesin olarak belirtir.</li>\n    </ul>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🗺️ 7 Adımda ER Modelinden İlişkisel Şemaya (Tablolara) Dönüşüm Algoritması</h3>\n    \n    <div class=\"info-box\">\n        <strong>Adım 1: Güçlü Varlıkların Dönüşümü:</strong><br>\n        Her güçlü varlık için ayrı bir tablo açılır. Basit nitelikler sütun yapılır. Bileşik niteliklerin ise yalnızca <em>en uçtaki atomik alt nitelikleri</em> sütun olarak eklenir. Birincil anahtar tablonun PK'si olur.\n    </div>\n\n    <div class=\"info-box\">\n        <strong>Adım 2: Zayıf Varlıkların Dönüşümü:</strong><br>\n        Zayıf varlık için ayrı bir tablo açılır. Sahip olduğu güçlü varlığın PK'si bu tabloya <strong>Yabancı Anahtar (FK)</strong> olarak eklenir. Tablonun Birincil Anahtarı: <code>(Sahip_PK + Zayıf_Kısmi_Anahtar)</code> birleşimi olan <strong>Bileşik Anahtardır (Composite PK)</strong>.\n    </div>\n\n    <div class=\"info-box\">\n        <strong>Adım 3: 1:1 İlişkilerin Dönüşümü:</strong><br>\n        İlişkinin <em>Tam Katılımlı (Total)</em> olduğu taraftaki tabloya diğer tablonun PK'si FK olarak eklenir (ve UNIQUE kısıtı verilir). Eğer iki taraf da tam katılımlıysa iki varlık tek bir tabloda birleştirilebilir.\n    </div>\n\n    <div class=\"info-box warning\">\n        <strong>Adım 4: 1:N İlişkilerin Dönüşümü (ÇOK ÖNEMLİ):</strong><br>\n        İlişkinin <strong>N (Çok) tarafındaki tabloya</strong>, 1 tarafındaki tablonun Birincil Anahtarı (PK) <strong>Yabancı Anahtar (FK)</strong> olarak eklenir! (Örn: Her öğrencinin bir bölümü vardır -> Ogrenci tablosuna BolumId FK olarak eklenir).\n    </div>\n\n    <div class=\"info-box danger\">\n        <strong>Adım 5: M:N İlişkilerin Dönüşümü (KAVŞAK TABLOSU):</strong><br>\n        M:N ilişkiler doğrudan tablolara FK eklenerek çözülemez! Mutlaka <strong>YENİ BİR BAĞLANTI / KAVŞAK TABLOSU (Junction / Bridge Table)</strong> oluşturulur. Bu tablonun PK'si, her iki tablonun PK'lerinin birleşiminden oluşan bileşik anahtardır: <code>(Tablo1_PK, Tablo2_PK)</code>. Varsa ilişkinin kendi nitelikleri de bu tabloya eklenir.\n    </div>\n\n    <div class=\"info-box\">\n        <strong>Adım 6: Çok Değerli Niteliklerin Dönüşümü:</strong><br>\n        Her çok değerli nitelik için AYRI BİR TABLO oluşturulur. Varlığın PK'si FK olarak alınır. Tablonun PK'si: <code>(Varlik_PK + Nitelik_Degeri)</code> bileşik anahtarıdır.\n    </div>\n\n    <div class=\"info-box\">\n        <strong>Adım 7: n-li (Ternary vb.) İlişkilerin Dönüşümü:</strong><br>\n        Yeni bir tablo oluşturulur ve ilişkiye katılan tüm varlıkların PK'leri FK olarak eklenir.\n    </div>\n</div>"
+  },
+  {
+    "id": "normalizasyon",
+    "icon": "⚖️",
+    "title": "Normalizasyon, Fonksiyonel Bağımlılıklar & Ayrıştırma",
+    "priority": "high",
+    "subtitle": "DBMS_14 - Veritabanı Anomalileri, Armstrong Aksiyomları, Aday Anahtar Bulma & 1NF, 2NF, 3NF, BCNF Adımları",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 Normalizasyonun Amacı ve Veritabanı Anomalileri</h3>\n    <p>Normalizasyon, veritabanındaki <strong>veri tekrarını (redundancy) en aza indirmek</strong> ve veri bütünlüğünü bozan <strong>güncelleme, ekleme ve silme anomalilerini ortadan kaldırmak</strong> için tabloları belirli kurallara göre daha küçük, ilişkili tablolara ayrıştırma (decomposition) sürecidir.</p>\n    \n    <table class=\"table-styled\">\n        <tr><th>Anomali Türü</th><th>Tanım ve Tehlikesi</th><th>Örnek</th></tr>\n        <tr><td><strong>Ekleme Anomalisi (Insertion Anomaly)</strong></td><td>Bir varlığa ait bilgiyi, onunla ilişkili başka bir bağımsız varlık olmadan veritabanına ekleyememe durumu.</td><td>Henüz hiç öğrencisi kayıt olmamış yeni bir bölümü, Ogrenci-Ders tablosuna öğrenci bilgisi olmadan ekleyememek.</td></tr>\n        <tr><td><strong>Silme Anomalisi (Deletion Anomaly)</strong></td><td>Bir kaydı silerken, onunla birlikte kaybolmaması gereken tamamen farklı bir bilginin de kazara silinmesi.</td><td>Bir bölümdeki son öğrenciyi sildiğimizde, o bölümün varlığına ait tüm bilgilerin de sistemden yok olması.</td></tr>\n        <tr><td><strong>Güncelleme Anomalisi (Update Anomaly)</strong></td><td>Tekrarlayan verinin bir satırda güncellenip diğer satırlarda unutulması sonucu veritabanının tutarsız hale gelmesi.</td><td>Bölüm başkanının adı değiştiğinde, 1000 öğrenci satırından 900'ünde güncellenip 100'ünde eski kalması.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>📐 Fonksiyonel Bağımlılık (FD) ve Armstrong Aksiyomları</h3>\n    <p>Bir ilişkide X ve Y nitelik kümeleri olsun. Eğer her bir X değeri benzersiz olarak tam bir Y değerini belirliyorsa, <strong>\"Y, X'e fonksiyonel bağımlıdır\"</strong> denir ve <code>X -> Y</code> şeklinde gösterilir (X: Belirleyici / Determinant).</p>\n    \n    <div class=\"info-box\">\n        <strong>Armstrong Aksiyomları (Temel Kurallar):</strong><br>\n        1. <strong>Yansıma (Reflexivity):</strong> Eğer Y ⊆ X ise, o zaman <code>X -> Y</code> dir (Örn: <code>(TC, Ad) -> TC</code>).<br>\n        2. <strong>Artırma (Augmentation):</strong> Eğer <code>X -> Y</code> ise, o zaman her Z için <code>XZ -> YZ</code> dir.<br>\n        3. <strong>Geçişlilik (Transitivity):</strong> Eğer <code>X -> Y</code> ve <code>Y -> Z</code> ise, o zaman <code>X -> Z</code> dir.<br>\n        <strong>İkincil Türetilmiş Kurallar:</strong><br>\n        • Birleşim (Union): <code>X -> Y</code> ve <code>X -> Z</code> ise <code>X -> YZ</code> dir.<br>\n        • Ayrıştırma (Decomposition): <code>X -> YZ</code> ise <code>X -> Y</code> ve <code>X -> Z</code> dir.\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔍 Nitelik Kapanışı (X⁺) ve Aday Anahtar Bulma Algoritması</h3>\n    <p>Bir X niteliğinin kapanışı (<code>X⁺</code>), mevcut bağımlılıklar kullanılarak X'ten erişilebilen tüm niteliklerin kümesidir.</p>\n    <div class=\"code-example\">Örnek: R(A, B, C, D, E) tablosu ve Bağımlılıklar: { A -> B, B -> C, C -> D, D -> E }\n1. A'nın kapanışını hesaplayalım:\n   A⁺ = { A } (kendisi)\n   A -> B olduğu için: A⁺ = { A, B }\n   B -> C olduğu için: A⁺ = { A, B, C }\n   C -> D olduğu için: A⁺ = { A, B, C, D }\n   D -> E olduğu için: A⁺ = { A, B, C, D, E } = R\n2. A⁺ tablodaki TÜM nitelikleri kapsadığı için A bir SÜPER ANAHTARDIR.\n3. A tek bir nitelik olduğundan hiçbir alt kümesi yoktur; dolayısıyla A bir ADAY ANAHTARDIR!</div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🏆 Normal Formlar Hiyerarşisi (1NF, 2NF, 3NF, BCNF)</h3>\n    <table class=\"table-styled\">\n        <tr><th>Normal Form</th><th>Gereksinim / Sağlanması Gereken Şart</th><th>Ortadan Kaldırılan Problem</th></tr>\n        <tr><td><strong>1NF (1. Normal Form)</strong></td><td>Tüm hücreler <strong>atomik (bölünemez)</strong> tekil değerler içermeli. Tekrarlayan gruplar ve diziler bulunmamalı.</td><td>Çok değerli nitelikler ve dizi karmaşası kalkar.</td></tr>\n        <tr><td><strong>2NF (2. Normal Form)</strong></td><td>Tablo 1NF'de olmalı VE <strong>Kısmi Fonksiyonel Bağımlılık (Partial Dependency) OLMAMALIDIR!</strong> (Hiçbir asal olmayan nitelik, bileşik aday anahtarın bir parçasına bağımlı olamaz; anahtarın TAMAMINA tam bağımlı olmalıdır).<br><em>Not: Aday anahtarı tek sütundan oluşan bir tablo 1NF'deyse otomatik olarak 2NF'dedir!</em></td><td>Bileşik anahtarın parçasına bağlı veri tekrarları önlenir.</td></tr>\n        <tr><td><strong>3NF (3. Normal Form)</strong></td><td>Tablo 2NF'de olmalı VE <strong>Geçişli Bağımlılık (Transitive Dependency) OLMAMALIDIR!</strong> (Asal olmayan bir nitelik başka bir asal olmayan niteliği belirleyemez: X -> Y ve Y -> Z durumu kalkmalıdır).<br><strong>Resmi Kural:</strong> Her <code>X -> A</code> bağımlılığı için; ya X bir <em>Süper Anahtar</em> olmalı YA DA A bir <em>Asal Nitelik</em> (Aday anahtar parçası) olmalıdır.</td><td>Anahtar dışı sütunlar arası bağımlılıklar ve veri anomalileri kalkar.</td></tr>\n        <tr><td><strong>BCNF (Boyce-Codd Normal Form)</strong></td><td><strong>Güçlü 3NF'dir.</strong> Tablodaki HER <code>X -> A</code> fonksiyonel bağımlılığında belirleyici olan X <strong>MUTLAKA BİR SÜPER ANAHTAR OLMALIDIR!</strong> (3NF'deki \"A asaldır\" istisnasını kabul etmez!).</td><td>Aday anahtar parçalarının birbirini belirlemesinden doğan tüm anomaliler sıfırlanır.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>💡 Çözümlü Normalizasyon Sınav Sorusu</h3>\n    <div class=\"code-example\">Tablo: SiparisDetay (<u>SiparisNo</u>, <u>UrunNo</u>, UrunAd, BirimFiyat, Adet, MusteriNo, MusteriAd)\nBağımlılıklar:\n  (SiparisNo, UrunNo) -> Adet\n  UrunNo -> UrunAd, BirimFiyat          (Kısmi Bağımlılık!)\n  SiparisNo -> MusteriNo, MusteriAd     (Kısmi Bağımlılık!)\n  MusteriNo -> MusteriAd                (Geçişli Bağımlılık!)\n\n1. ADIM (2NF'ye Dönüştürme - Kısmi Bağımlılıkları Ayır):\n   - Tablo 1 (SiparisUrun): (<u>SiparisNo</u>, <u>UrunNo</u>, Adet)\n   - Tablo 2 (Urun): (<u>UrunNo</u>, UrunAd, BirimFiyat)\n   - Tablo 3 (Siparis): (<u>SiparisNo</u>, MusteriNo, MusteriAd)\n\n2. ADIM (3NF'ye Dönüştürme - Siparis tablosundaki Geçişli Bağımlılığı Ayır):\n   - Tablo 3a (Siparis): (<u>SiparisNo</u>, MusteriNo)\n   - Tablo 3b (Musteri): (<u>MusteriNo</u>, MusteriAd)\n\nSONUÇ: 4 adet 3NF/BCNF uyumlu tablo elde edildi! Sıfır anomali, sıfır gereksiz tekrar!</div>\n</div>"
+  },
+  {
+    "id": "transaction",
+    "icon": "🔒",
+    "title": "İşlem Yönetimi (Transactions), Eşzamanlılık & Kilitleme",
+    "priority": "high",
+    "subtitle": "Deney Föyü & veritabanıfinal - ACID İlkeleri, Eşzamanlılık Problemleri, İzolasyon Seviyeleri & 2PL Kilitleme",
+    "content": "<div class=\"topic-section\">\n    <h3>📌 İşlem (Transaction) Nedir? ACID İlkeleri</h3>\n    <p>Bir Transaction (İşlem), veritabanında mantıksal olarak <strong>bölünemez tek bir iş birimi (Atomic Unit of Work)</strong> oluşturan bir veya daha fazla SQL komutunun bütünüdür.</p>\n    \n    <div class=\"info-box success\">\n        <strong>💎 ACID İlkeleri (Veritabanının 4 Temel Taşı):</strong><br>\n        • <strong>A - Atomicity (Atomiklik / Bölünemezlik):</strong> \"Ya hep ya hiç\" kuralıdır. İşlemdeki tüm komutlar ya tamamen başarıyla tamamlanır (COMMIT) ya da herhangi bir hata durumunda tüm değişiklikler geri alınarak veritabanı işlem öncesi haline döndürülür (ROLLBACK).<br>\n        • <strong>C - Consistency (Tutarlılık):</strong> İşlem başlamadan önce veritabanı geçerli ve tutarlı bir durumdadır; işlem bittiğinde de tüm bütünlük kısıtlarına (PK, FK, CHECK vb.) uygun tutarlı bir duruma geçmelidir.<br>\n        • <strong>I - Isolation (Yalıtım / İzolasyon):</strong> Eşzamanlı çalışan işlemler birbirinden izoledir. Bir işlemin tamamlanmamış ara sonuçları diğer işlemler tarafından görülemez.<br>\n        • <strong>D - Durability (Dayanıklılık / Kalıcılık):</strong> Başarıyla tamamlanan (COMMIT edilmiş) bir işlemin sonuçları, sistem çökse, elektrik kesilse dahi kalıcıdır ve asla kaybolmaz (Write-Ahead Logging / Transaction Log sayesinde).\n    </div>\n</div>\n\n<div class=\"topic-section\">\n    <h3>⚡ Eşzamanlılık Problemleri (Concurrency Anomalies)</h3>\n    <table class=\"table-styled\">\n        <tr><th>Problem</th><th>Açıklama ve Senaryo</th></tr>\n        <tr><td><strong>Kirli Okuma (Dirty Read)</strong></td><td>Bir işlemin (T1) henüz COMMIT etmediği değiştirilmiş veriyi başka bir işlemin (T2) okumasıdır. Eğer T1 daha sonra ROLLBACK yaparsa, T2'nin okuduğu veri tamamen hayali/çöp (kirli) olur.</td></tr>\n        <tr><td><strong>Tekrarlanamayan Okuma (Non-Repeatable Read)</strong></td><td>Bir işlem (T1) aynı satırı işlem içinde iki kez okuduğunda; araya giren başka bir işlemin (T2) o satırı güncelleyip (UPDATE) COMMIT etmesi sonucu iki okumada farklı değerler görmesidir.</td></tr>\n        <tr><td><strong>Hayalet Okuma (Phantom Read)</strong></td><td>Bir işlem (T1) belirli bir aralık koşuluyla (örn: <code>maas > 5000</code>) satırları okurken; araya giren başka bir işlemin (T2) o aralığa uyan yeni bir satır eklemesi (INSERT) veya silmesi sonucu, T1 aynı sorguyu tekrar çalıştırdığında daha önce var olmayan \"hayalet\" yeni satırlar görmesidir.</td></tr>\n        <tr><td><strong>Kayıp Güncelleme (Lost Update)</strong></td><td>İki işlemin aynı anda aynı veriyi okuyup bağımsız güncellemeler yapması sonucu, son yazan işlemin ilk yazan işlemin güncellemesini ezerek yok etmesidir.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🛡️ 4 Temel SQL İzolasyon Seviyesi Karşılaştırma Matrisi</h3>\n    <table class=\"table-styled\">\n        <tr><th>İzolasyon Seviyesi</th><th>Kirli Okuma (Dirty Read)</th><th>Tekrarlanamayan Okuma (Non-Repeatable)</th><th>Hayalet Okuma (Phantom Read)</th><th>Performans & Kilitlenme</th></tr>\n        <tr><td><code>READ UNCOMMITTED</code></td><td><strong>İzin Verir (Yaşanır!)</strong></td><td>İzin Verir</td><td>İzin Verir</td><td>En Hızlı / En Güvensiz</td></tr>\n        <tr><td><code>READ COMMITTED</code> (Varsayılan)</td><td><strong>ENGELLER ✅</strong></td><td>İzin Verir</td><td>İzin Verir</td><td>Hızlı ve Dengeli</td></tr>\n        <tr><td><code>REPEATABLE READ</code></td><td><strong>ENGELLER ✅</strong></td><td><strong>ENGELLER ✅</strong></td><td>İzin Verir</td><td>Orta / Okuma kilitleri tutar</td></tr>\n        <tr><td><code>SERIALIZABLE</code></td><td><strong>ENGELLER ✅</strong></td><td><strong>ENGELLER ✅</strong></td><td><strong>ENGELLER ✅</strong></td><td>En Yavaş / En Katı (Aralık Kilitleri)</td></tr>\n        <tr><td><code>SNAPSHOT</code></td><td><strong>ENGELLER ✅</strong></td><td><strong>ENGELLER ✅</strong></td><td><strong>ENGELLER ✅</strong></td><td>Satır Sürümleme (Row Versioning) ile kilit koymadan tutarlı anlık görüntü sağlar.</td></tr>\n    </table>\n</div>\n\n<div class=\"topic-section\">\n    <h3>🔒 Kilit Türleri (Locks) ve İki Fazlı Kilitleme (2PL)</h3>\n    <ul>\n        <li><strong>Paylaşımlı Kilit (Shared Lock - S):</strong> Okuma (<code>SELECT</code>) işlemlerinde konulur. Birden fazla işlem aynı anda aynı veri üzerinde S kilidi tutabilir (Okumalar birbirini engellemez).</li>\n        <li><strong>Özel / Ayrıcalıklı Kilit (Exclusive Lock - X):</strong> Yazma (<code>INSERT, UPDATE, DELETE</code>) işlemlerinde konulur. Başka hiçbir kilitle (S veya X) uyuşmaz; veri üzerinde tam tekel kurar.</li>\n        <li><strong>Güncelleme Kilidi (Update Lock - U):</strong> Veri güncellenmeden önceki arama aşamasında konulur; olası kilitlenmeleri (Deadlock) önler.</li>\n        <li><strong>İki Fazlı Kilitleme Protokolü (2PL - Two-Phase Locking):</strong> Seri hale getirilebilirliği (Serializability) garanti eder.\n            <ul>\n                <li><strong>1. Büyüme Fazı (Growing Phase):</strong> İşlem yalnızca yeni kilitler alabilir, elindeki hiçbir kilidi bırakamaz.</li>\n                <li><strong>2. Küçülme Fazı (Shrinking Phase):</strong> İşlem kilitleri serbest bırakmaya başlar, kesinlikle yeni bir kilit talep edemez.</li>\n            </ul>\n        </li>\n        <li><strong>Ölümcül Kilitlenme (Deadlock):</strong> İki veya daha fazla işlemin birbirinin elinde tuttuğu kilitleri karşılıklı olarak sonsuza kadar beklemesi durumudur. VTYS Deadlock Dedektörü döngüyü tespit eder ve en az maliyetli işlemi <strong>Kurban (Victim)</strong> seçerek ROLLBACK eder.</li>\n    </ul>\n</div>"
+  }
 ];

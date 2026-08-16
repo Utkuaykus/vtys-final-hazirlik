@@ -43,15 +43,20 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 // =============================
 const TOPIC_MAP = {
     'Temel SQL & Sorgular': 'sql-temel',
-    'JOIN & Alt Sorgular': 'sql-temel',
-    'Stored Procedure & Fonksiyonlar': 'stored-procedure',
+    'JOIN & Alt Sorgular': 'sql-joins-subqueries',
+    'Stored Procedure': 'stored-procedure',
+    'Kullanıcı Tanımlı Fonksiyonlar': 'sql-functions',
     'İlişkisel Cebir': 'iliskisel-cebir',
-    'DDL, Kısıtlar & Bütünlük': 'sql-ddl',
+    'İlişkisel Model & Bütünlük': 'iliskisel-model',
+    'DDL, Kısıtlar & İndeksler': 'sql-ddl',
     'Trigger (Tetikleyiciler)': 'trigger',
     'ER Modelleme & Tasarım': 'er-modelleme',
-    'PL/SQL & T-SQL Programlama': 't-sql',
+    'T-SQL Programlama': 't-sql',
+    'PL/SQL Programlama': 'plsql',
     'Cursor (İmleçler)': 'cursor',
-    'Normalizasyon': 'normalizasyon'
+    'Normalizasyon': 'normalizasyon',
+    'İşlem Yönetimi & Eşzamanlılık': 'transaction',
+    'VTYS Mimarisi & Temel Kavramlar': 'vtys-mimari-temel'
 };
 
 function getQuestionTopic(q) {
@@ -59,13 +64,18 @@ function getQuestionTopic(q) {
 
     if (text.includes('trigger') || text.includes('tetikleyici') || text.includes('inserted') || text.includes('deleted tab')) return 'Trigger (Tetikleyiciler)';
     if (text.includes('cursor') || text.includes('imleç') || text.includes('fetch') || text.includes('deallocate') || text.includes('@@fetch_status')) return 'Cursor (İmleçler)';
-    if (text.includes('procedure') || text.includes('saklı yordam') || text.includes('create proc') || text.includes('fonksiyon') || text.includes('function') || text.includes('udf') || text.includes('skaler')) return 'Stored Procedure & Fonksiyonlar';
-    if (text.includes('pl/sql') || text.includes('%type') || text.includes('%rowtype') || text.includes('package') || text.includes('varray') || text.includes('declare') || text.includes('@@rowcount') || text.includes('@@identity') || text.includes('while') || text.includes('case when')) return 'PL/SQL & T-SQL Programlama';
+    if (text.includes('procedure') || text.includes('saklı yordam') || text.includes('create proc') || text.includes('sp_')) return 'Stored Procedure';
+    if (text.includes('fonksiyon') || text.includes('function') || text.includes('udf') || text.includes('skaler') || text.includes('inline table')) return 'Kullanıcı Tanımlı Fonksiyonlar';
+    if (text.includes('pl/sql') || text.includes('%type') || text.includes('%rowtype') || text.includes('package') || text.includes('varray') || text.includes('raise_application_error') || text.includes('no_data_found')) return 'PL/SQL Programlama';
+    if (text.includes('@@rowcount') || text.includes('@@identity') || text.includes('scope_identity') || text.includes('#tablo') || text.includes('##tablo') || text.includes('while') || text.includes('case when') || text.includes('try') || text.includes('catch') || text.includes('declare @')) return 'T-SQL Programlama';
     if (text.includes('1nf') || text.includes('2nf') || text.includes('3nf') || text.includes('bcnf') || text.includes('4nf') || text.includes('5nf') || text.includes('normalizasyon') || text.includes('kısmi bağımlılık') || text.includes('geçişli bağımlılık') || text.includes('anomali') || text.includes('armstrong') || text.includes('ayrıştırma')) return 'Normalizasyon';
-    if (text.includes('er model') || text.includes('zayıf varlık') || text.includes('weak entity') || text.includes('türetilen nitelik') || text.includes('çok değerli nitelik') || text.includes('aday anahtar') || text.includes('süper anahtar') || text.includes('kavşak')) return 'ER Modelleme & Tasarım';
+    if (text.includes('er model') || text.includes('zayıf varlık') || text.includes('weak entity') || text.includes('türetilen') || text.includes('türetilmiş') || text.includes('çok değerli') || text.includes('kavşak')) return 'ER Modelleme & Tasarım';
     if (text.includes('ilişkisel cebir') || text.includes('kartezyen') || text.includes('projeksiyon') || text.includes('semijoin') || text.includes('bölme') || text.includes('σ') || text.includes('π') || text.includes('⋈')) return 'İlişkisel Cebir';
-    if (text.includes('create table') || text.includes('alter table') || text.includes('drop table') || text.includes('foreign key') || text.includes('primary key') || text.includes('check (') || text.includes('unique') || text.includes('cascade') || text.includes('index') || text.includes('indeks') || text.includes('transaction') || text.includes('acid') || text.includes('commit') || text.includes('rollback') || text.includes('grant') || text.includes('revoke')) return 'DDL, Kısıtlar & Bütünlük';
-    if (text.includes('join') || text.includes('alt sorgu') || text.includes('subquery') || text.includes('exists') || text.includes('> all') || text.includes('> any')) return 'JOIN & Alt Sorgular';
+    if (text.includes('süper anahtar') || text.includes('aday anahtar') || text.includes('birincil anahtar') || text.includes('varlık bütünlüğü') || text.includes('referans bütünlüğü') || text.includes('kardinalite') || text.includes('derece')) return 'İlişkisel Model & Bütünlük';
+    if (text.includes('transaction') || text.includes('acid') || text.includes('commit') || text.includes('rollback') || text.includes('dirty read') || text.includes('phantom read') || text.includes('serializable') || text.includes('2pl') || text.includes('deadlock') || text.includes('kilit')) return 'İşlem Yönetimi & Eşzamanlılık';
+    if (text.includes('ansi') || text.includes('sparc') || text.includes('veri bağımsızlığı') || text.includes('dosya sistemi') || text.includes('dba') || text.includes('kavramsal düzey') || text.includes('fiziksel düzey')) return 'VTYS Mimarisi & Temel Kavramlar';
+    if (text.includes('create table') || text.includes('alter table') || text.includes('drop table') || text.includes('truncate') || text.includes('foreign key') || text.includes('primary key') || text.includes('check (') || text.includes('unique') || text.includes('cascade') || text.includes('index') || text.includes('indeks') || text.includes('clustered') || text.includes('view') || text.includes('grant') || text.includes('revoke')) return 'DDL, Kısıtlar & İndeksler';
+    if (text.includes('join') || text.includes('alt sorgu') || text.includes('subquery') || text.includes('exists') || text.includes('> all') || text.includes('> any') || text.includes('union') || text.includes('intersect') || text.includes('except')) return 'JOIN & Alt Sorgular';
 
     return 'Temel SQL & Sorgular';
 }
@@ -87,21 +97,26 @@ function goToTopicStudy(topicId) {
 // ============ Topics ============
 function renderTopicsNav() {
     const nav = document.getElementById('topicsNav');
-    if (nav.children.length > 0) return; // already rendered
-    TOPICS.forEach((topic, i) => {
-        const item = document.createElement('div');
-        item.className = 'topic-nav-item';
-        item.dataset.topicId = topic.id;
-        const priorityClass = topic.priority === 'high' ? 'priority-high' : topic.priority === 'medium' ? 'priority-medium' : 'priority-low';
-        const priorityLabel = topic.priority === 'high' ? 'YÜKSEK' : topic.priority === 'medium' ? 'ORTA' : 'DÜŞÜK';
-        item.innerHTML = `
-            <span class="topic-nav-icon">${topic.icon}</span>
-            <span>${topic.title}</span>
-            <span class="topic-nav-priority ${priorityClass}">${priorityLabel}</span>
-        `;
-        item.addEventListener('click', () => showTopic(topic.id));
-        nav.appendChild(item);
-    });
+    if (nav.children.length === 0) {
+        TOPICS.forEach((topic, i) => {
+            const item = document.createElement('div');
+            item.className = 'topic-nav-item';
+            item.dataset.topicId = topic.id;
+            const priorityClass = topic.priority === 'high' ? 'priority-high' : topic.priority === 'medium' ? 'priority-medium' : 'priority-low';
+            const priorityLabel = topic.priority === 'high' ? 'YÜKSEK' : topic.priority === 'medium' ? 'ORTA' : 'DÜŞÜK';
+            item.innerHTML = `
+                <span class="topic-nav-icon">${topic.icon}</span>
+                <span>${topic.title}</span>
+                <span class="topic-nav-priority ${priorityClass}">${priorityLabel}</span>
+            `;
+            item.addEventListener('click', () => showTopic(topic.id));
+            nav.appendChild(item);
+        });
+    }
+    const activeItem = nav.querySelector('.topic-nav-item.active');
+    if (!activeItem && TOPICS.length > 0) {
+        showTopic(TOPICS[0].id);
+    }
 }
 
 function showTopic(topicId) {
