@@ -1,16 +1,23 @@
-// =============================================
-// VTYS MASTER KONU ANLATIMLARI - 100 Tam Puan Rehberi
-// Tüm ders slaytları, deney föyü ve çıkmış sınavlardan derlenmiştir.
-// =============================================
+# -*- coding: utf-8 -*-
+"""
+generate_perfect_topics.py
+Generates the comprehensive, all-inclusive, 100-guarantee topic explanation guide (topics.js)
+covering every single concept, formula, code example, exam trap, and comparison matrix
+from all lecture slides (DBMS_4 to DBMS_14, T-SQL, Trigger, Cursor, SP, PL/SQL, Normalizasyon),
+lab manual (DreamHome & Kütüphane), and university past exams.
+"""
 
-const TOPICS = [
-{
-  id: "iliskisel-model",
-  icon: "🔗",
-  title: "İlişkisel Model (Relational Model)",
-  priority: "medium",
-  subtitle: "DBMS_4 - E.F. Codd (1970) İlişkisel Veri Modeli, Bütünlük Kuralları & Anahtar Hiyerarşisi",
-  content: `<div class="topic-section">
+import json
+
+TOPICS_DATA = [
+    {
+        "id": "iliskisel-model",
+        "icon": "🔗",
+        "title": "İlişkisel Model (Relational Model)",
+        "priority": "medium",
+        "subtitle": "DBMS_4 - E.F. Codd (1970) İlişkisel Veri Modeli, Bütünlük Kuralları & Anahtar Hiyerarşisi",
+        "content": """
+<div class="topic-section">
     <h3>📌 İlişkisel Modelin Doğuşu ve Temel Kavramlar</h3>
     <p>İlişkisel Veri Tabanı Yönetim Sistemi (RDBMS), 1970 yılında <strong>E.F. Codd</strong> tarafından IBM laboratuvarlarında matematiksel küme teorisine dayalı olarak geliştirilmiştir. İlişkisel modelde tüm veriler mantıksal olarak <strong>ilişkiler (tablolar / relations)</strong> şeklinde temsil edilir.</p>
     <ul>
@@ -60,15 +67,17 @@ const TOPICS = [
         <strong>4. İş / Kullanıcı Tanımlı Bütünlük (Enterprise / Business Integrity):</strong><br>
         Kurumun özel iş kurallarını zorunlu kılan kısıtlamalardır (Örn: Maaş asgari ücretten az olamaz, final notu 0-100 arası olmalıdır). Trigger ve CHECK kısıtları ile sağlanır.
     </div>
-</div>`
-},
-{
-  id: "iliskisel-cebir",
-  icon: "🧮",
-  title: "İlişkisel Cebir (Relational Algebra)",
-  priority: "high",
-  subtitle: "DBMS_5 - Prosedürel İlişkisel İşlemler, Semboller (σ, π, ⋈, ×, ÷, ⋉) & SQL Dönüşümleri",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "iliskisel-cebir",
+        "icon": "🧮",
+        "title": "İlişkisel Cebir (Relational Algebra)",
+        "priority": "high",
+        "subtitle": "DBMS_5 - Prosedürel İlişkisel İşlemler, Semboller (σ, π, ⋈, ×, ÷, ⋉) & SQL Dönüşümleri",
+        "content": """
+<div class="topic-section">
     <h3>📌 İlişkisel Cebir Nedir?</h3>
     <p>İlişkisel cebir, bir veya daha fazla ilişkiyi girdi alarak orijinal ilişkileri değiştirmeden sonuçta <strong>yeni bir ilişki (tablo)</strong> üreten <strong>prosedürel sorgu dilidir</strong>.</p>
     <p><strong>Kapanma (Closure) Özelliği:</strong> Her işlemin çıktısı yine bir ilişkisel tablo olduğundan, işlemler iç içe (nested) ve zincirleme olarak birleştirilebilir.</p>
@@ -107,15 +116,17 @@ CEBİR: π_staffNo(Staff) − π_staffNo(PropertyForRent)
 
 -- Örnek 4: Tüm dersleri alan öğrenciler (Bölme / Division)
 CEBİR: π_ogrNo, dersKod(Notlar) ÷ π_dersKod(Dersler)</div>
-</div>`
-},
-{
-  id: "sql-temel",
-  icon: "💻",
-  title: "SQL (Structured Query Language) ve JOIN İşlemleri",
-  priority: "high",
-  subtitle: "DBMS_6 - Sorgulama Sırası, Filtreleme, JOIN Türleri, Alt Sorgular & Küme Mantığı",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "sql-temel",
+        "icon": "💻",
+        "title": "SQL (Structured Query Language) ve JOIN İşlemleri",
+        "priority": "high",
+        "subtitle": "DBMS_6 - Sorgulama Sırası, Filtreleme, JOIN Türleri, Alt Sorgular & Küme Mantığı",
+        "content": """
+<div class="topic-section">
     <h3>📌 SQL Komut Aileleri</h3>
     <table class="table-styled">
         <tr><th>Grup</th><th>Açılımı</th><th>Temel Komutlar</th><th>Görevi</th></tr>
@@ -165,15 +176,17 @@ CEBİR: π_ogrNo, dersKod(Notlar) ÷ π_dersKod(Dersler)</div>
         <li><strong>ALL:</strong> Alt sorgudan dönen değerlerin <strong>TAMAMINDAN</strong> büyük/küçük olmayı arar (Maksimumdan büyük).</li>
         <li><strong>EXISTS / NOT EXISTS:</strong> Alt sorgunun en az 1 satır üretip üretmediğini kontrol eder; ilk kayıtta TRUE döner (Hızlı ve NULL güvenlidir).</li>
     </ul>
-</div>`
-},
-{
-  id: "sql-ddl",
-  icon: "🏗️",
-  title: "SQL Veri Tanımlama (DDL), Kısıtlar & İndeksler",
-  priority: "high",
-  subtitle: "DBMS_7 - CREATE/ALTER/DROP, Kısıtlamalar, İndeks Stratejileri, Domain & DCL",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "sql-ddl",
+        "icon": "🏗️",
+        "title": "SQL Veri Tanımlama (DDL), Kısıtlar & İndeksler",
+        "priority": "high",
+        "subtitle": "DBMS_7 - CREATE/ALTER/DROP, Kısıtlamalar, İndeks Stratejileri, Domain & DCL",
+        "content": """
+<div class="topic-section">
     <h3>📌 DDL Komutları & Tablo Yönetimi</h3>
     <div class="code-example">-- Tablo Oluşturma
 CREATE TABLE Ogrenci (
@@ -231,15 +244,17 @@ GRANT UPDATE (maas) ON Staff TO MuhasebeUser;
 
 -- Yetki Geri Alma (REVOKE)
 REVOKE INSERT ON Ogrenci FROM User1;</div>
-</div>`
-},
-{
-  id: "t-sql",
-  icon: "📜",
-  title: "T-SQL ile Programlama ve Akış Kontrolü",
-  priority: "high",
-  subtitle: "T-SQL_1 - Değişkenler, SET vs SELECT, Global Değişkenler, IF-ELSE, CASE, WHILE & TRY-CATCH",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "t-sql",
+        "icon": "📜",
+        "title": "T-SQL ile Programlama ve Akış Kontrolü",
+        "priority": "high",
+        "subtitle": "T-SQL_1 - Değişkenler, SET vs SELECT, Global Değişkenler, IF-ELSE, CASE, WHILE & TRY-CATCH",
+        "content": """
+<div class="topic-section">
     <h3>📌 T-SQL Nedir ve Değişken Yönetimi</h3>
     <p>Transact-SQL (T-SQL), Microsoft SQL Server'ın standart SQL'e döngü, şart, değişken ve hata yakalama yetenekleri kazandıran prosedürel genişletmesidir.</p>
     <div class="code-example">-- Değişken Tanımlama (DECLARE)
@@ -312,15 +327,17 @@ BEGIN CATCH
     PRINT 'Hata Oluştu: ' + ERROR_MESSAGE();
     PRINT 'Hata Kodu: ' + CAST(ERROR_NUMBER() AS VARCHAR(10));
 END CATCH;</div>
-</div>`
-},
-{
-  id: "stored-procedure",
-  icon: "📦",
-  title: "Saklı Yordamlar (Stored Procedures)",
-  priority: "high",
-  subtitle: "saklıYordam_SP - Parametreler, DEFAULT Değerler, OUTPUT, RETURN & Upsert Deseni",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "stored-procedure",
+        "icon": "📦",
+        "title": "Saklı Yordamlar (Stored Procedures)",
+        "priority": "high",
+        "subtitle": "saklıYordam_SP - Parametreler, DEFAULT Değerler, OUTPUT, RETURN & Upsert Deseni",
+        "content": """
+<div class="topic-section">
     <h3>📌 Saklı Yordam Nedir ve Avantajları</h3>
     <p>Stored Procedure (SP), veritabanı sunucusunda saklanan, derlenmiş (precompiled) ve adıyla çağrılabilen T-SQL kod bloklarıdır.</p>
     <ul>
@@ -396,15 +413,17 @@ BEGIN
     ELSE
         INSERT INTO Musteri (HesapNo, Ad, bakiye) VALUES (@hesapNo, @ad, @bakiye);
 END;</div>
-</div>`
-},
-{
-  id: "trigger",
-  icon: "⚡",
-  title: "Tetikleyiciler (Triggers) ve Olay Yönetimi",
-  priority: "high",
-  subtitle: "trigger(tetikleyici) - AFTER vs INSTEAD OF, INSERTED/DELETED Sözde Tabloları & ROLLBACK",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "trigger",
+        "icon": "⚡",
+        "title": "Tetikleyiciler (Triggers) ve Olay Yönetimi",
+        "priority": "high",
+        "subtitle": "trigger(tetikleyici) - AFTER vs INSTEAD OF, INSERTED/DELETED Sözde Tabloları & ROLLBACK",
+        "content": """
+<div class="topic-section">
     <h3>📌 Tetikleyici (Trigger) Nedir ve Temel Kuralları</h3>
     <p>Tetikleyiciler; bir tabloda veya görünümde <strong>INSERT, UPDATE, DELETE</strong> olayları gerçekleştiğinde veritabanı motoru tarafından <strong>otomatik olarak</strong> devreye sokulan özel saklı kod bloklarıdır.</p>
     <ul>
@@ -461,15 +480,17 @@ BEGIN
     INSERT INTO Notbilgi_Log (ogrno, derskod, vizenot, finalnot, silinmetarihi)
     SELECT ogrno, derskod, vizenot, finalnot, GETDATE() FROM deleted;
 END;</div>
-</div>`
-},
-{
-  id: "cursor",
-  icon: "🎯",
-  title: "İmleçler (Cursors) ve Satır Bazlı İşlemler",
-  priority: "high",
-  subtitle: "Cursor - 5 Adım, @@FETCH_STATUS, SCROLL Hareketleri & WHERE CURRENT OF",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "cursor",
+        "icon": "🎯",
+        "title": "İmleçler (Cursors) ve Satır Bazlı İşlemler",
+        "priority": "high",
+        "subtitle": "Cursor - 5 Adım, @@FETCH_STATUS, SCROLL Hareketleri & WHERE CURRENT OF",
+        "content": """
+<div class="topic-section">
     <h3>📌 İmleç (Cursor) Nedir ve Ne Zaman Kullanılır?</h3>
     <p>SQL normalde küme tabanlıdır (set-based). Ancak her bir satırın sırayla tek tek okunup dış bir servise parametre olarak verilmesi, özel e-posta atılması veya satır bazlı karmaşık hesaplama yapılması gerektiğinde <strong>Cursor (İmleç)</strong> kullanılır.</p>
 </div>
@@ -528,15 +549,17 @@ END;
 
 CLOSE cr_staff;
 DEALLOCATE cr_staff;</div>
-</div>`
-},
-{
-  id: "plsql",
-  icon: "🏛️",
-  title: "Oracle PL/SQL Mimarisi ve İleri Nesneler",
-  priority: "high",
-  subtitle: "DBMS_8 Serisi - Blok Yapısı, %TYPE / %ROWTYPE, İstisnalar, Paketler & Koleksiyonlar",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "plsql",
+        "icon": "🏛️",
+        "title": "Oracle PL/SQL Mimarisi ve İleri Nesneler",
+        "priority": "high",
+        "subtitle": "DBMS_8 Serisi - Blok Yapısı, %TYPE / %ROWTYPE, İstisnalar, Paketler & Koleksiyonlar",
+        "content": """
+<div class="topic-section">
     <h3>📌 PL/SQL Blok Mimarisi</h3>
     <p>PL/SQL (Procedural Language / SQL), Oracle veritabanının blok yapılı programlama dilidir.</p>
     <div class="code-example">DECLARE       -- İsteğe bağlı: Değişken, sabit, imleç ve tip tanımları
@@ -581,15 +604,17 @@ END;
         <tr><td><strong>Nested Table (İç İçe Tablo)</strong></td><td>Dinamik sınırsız</td><td>Sıralı tamsayı</td><td>Veritabanı sütununda da saklanabilen tek boyutlu dizi</td></tr>
         <tr><td><strong>VARRAY (Variable-Size Array)</strong></td><td>Sabit üst sınırlı (n)</td><td>1'den n'e sıralı tamsayı</td><td>Eleman sayısı önceden bilinen sabit sıralı koleksiyonlar</td></tr>
     </table>
-</div>`
-},
-{
-  id: "er-modelleme",
-  icon: "📐",
-  title: "Varlık-İlişki (ER) Modellemesi ve Tasarım",
-  priority: "medium",
-  subtitle: "DBMS_12 - Varlık Tipleri, Nitelikler, İlişkiler, Kardinalite & Dönüşüm Kuralları",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "er-modelleme",
+        "icon": "📐",
+        "title": "Varlık-İlişki (ER) Modellemesi ve Tasarım",
+        "priority": "medium",
+        "subtitle": "DBMS_12 - Varlık Tipleri, Nitelikler, İlişkiler, Kardinalite & Dönüşüm Kuralları",
+        "content": """
+<div class="topic-section">
     <h3>📌 ER Diyagramı Standart Sembolleri</h3>
     <table class="table-styled">
         <tr><th>Kavram</th><th>ER Sembolü</th><th>Açıklama ve Örnek</th></tr>
@@ -611,15 +636,17 @@ END;
         <li><strong>M:N (Çoka-Çok) İlişkiler:</strong> Doğrudan tek tabloya FK eklenemez; her iki tablonun PK'lerini FK olarak alan yeni bir <strong>Bağlantı/Kavşak Tablosu (Junction Table)</strong> oluşturulur.</li>
         <li><strong>Çok Değerli Nitelikler:</strong> 1NF kuralını ihlal etmemek için varlığın PK'si ile birlikte ayrı bir tabloya taşınır.</li>
     </ul>
-</div>`
-},
-{
-  id: "normalizasyon",
-  icon: "⚖️",
-  title: "Normalizasyon ve Fonksiyonel Bağımlılıklar",
-  priority: "high",
-  subtitle: "DBMS_14 - Anomaliler, 1NF, 2NF, 3NF, BCNF, 4NF, 5NF & Kayıpsız Ayrıştırma",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "normalizasyon",
+        "icon": "⚖️",
+        "title": "Normalizasyon ve Fonksiyonel Bağımlılıklar",
+        "priority": "high",
+        "subtitle": "DBMS_14 - Anomaliler, 1NF, 2NF, 3NF, BCNF, 4NF, 5NF & Kayıpsız Ayrıştırma",
+        "content": """
+<div class="topic-section">
     <h3>📌 Normalizasyonun Amacı ve Veritabanı Anomalileri</h3>
     <p>Normalizasyon; ilişkisel veritabanı tasarımında <strong>gereksiz veri tekrarını (redundancy)</strong> en aza indirmek ve veri tutarsızlıklarına yol açan <strong>anomalileri</strong> ortadan kaldırmak için tabloların sistematik olarak ayrıştırılması işlemidir.</p>
     <ul>
@@ -648,15 +675,17 @@ END;
         <tr><td><strong>3NF (Üçüncü NF)</strong></td><td>Tablo 2NF'de olmalı ve <strong>geçişli bağımlılık bulunmamalıdır</strong> (Anahtar olmayan alan başka bir anahtar olmayana bağlı olamaz).</td><td>Geçişli bağımlı alanlar (B -> C) ayrı bir tabloya taşınır.</td></tr>
         <tr><td><strong>BCNF (Boyce-Codd NF)</strong></td><td>Tablodaki her fonksiyonel bağımlılıkta (X -> Y), sol taraftaki belirleyici (X) mutlaka bir <strong>aday/süper anahtar</strong> olmalıdır.</td><td>Aday anahtar olmayan belirleyiciler ayrı tablolara ayrıştırılır.</td></tr>
     </table>
-</div>`
-},
-{
-  id: "sql-functions",
-  icon: "⚡",
-  title: "SQL Fonksiyonları & VIEW / FUNCTION / PROCEDURE Karşılaştırması",
-  priority: "high",
-  subtitle: "sql_Functions - Metin/Tarih Fonksiyonları, UDF Türleri & Kapsamlı Karşılaştırma Matrisi",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "sql-functions",
+        "icon": "⚡",
+        "title": "SQL Fonksiyonları & VIEW / FUNCTION / PROCEDURE Karşılaştırması",
+        "priority": "high",
+        "subtitle": "sql_Functions - Metin/Tarih Fonksiyonları, UDF Türleri & Kapsamlı Karşılaştırma Matrisi",
+        "content": """
+<div class="topic-section">
     <h3>📊 VIEW vs FUNCTION vs PROCEDURE Karşılaştırma Matrisi (Sınavda Kesin Çıkar!)</h3>
     <table class="table-styled">
         <tr><th>Özellik / Kriter</th><th>Görünüm (VIEW)</th><th>Kullanıcı Fonksiyonu (UDF)</th><th>Saklı Yordam (PROCEDURE)</th></tr>
@@ -681,15 +710,17 @@ END;
         <tr><td><code>LTRIM(str) / RTRIM(str)</code></td><td>Metnin solundaki/sağındaki gereksiz boşlukları temizler.</td><td>Temiz metin</td></tr>
         <tr><td><code>CONVERT(VARCHAR, date, 104)</code></td><td>Tarihi Alman/TR standardında nokta ile formatlar.</td><td><code>'17.08.2026'</code></td></tr>
     </table>
-</div>`
-},
-{
-  id: "transaction",
-  icon: "🛡️",
-  title: "Transaction Yönetimi, ACID İlkeleri ve İzolasyon Seviyeleri",
-  priority: "medium",
-  subtitle: "DBMS_7 - ACID Kuralları, Eşzamanlılık Problemleri (Dirty Read, Phantom), Kilitleme & SAVEPOINT",
-  content: `<div class="topic-section">
+</div>
+"""
+    },
+    {
+        "id": "transaction",
+        "icon": "🛡️",
+        "title": "Transaction Yönetimi, ACID İlkeleri ve İzolasyon Seviyeleri",
+        "priority": "medium",
+        "subtitle": "DBMS_7 - ACID Kuralları, Eşzamanlılık Problemleri (Dirty Read, Phantom), Kilitleme & SAVEPOINT",
+        "content": """
+<div class="topic-section">
     <h3>📌 ACID İlkeleri (Transaction Temel Taşları)</h3>
     <table class="table-styled">
         <tr><th>İlke</th><th>Açılımı</th><th>Tanım ve Anlamı</th></tr>
@@ -709,6 +740,34 @@ END;
         <tr><td><strong>Repeatable Read</strong></td><td>✅ Engellenir</td><td>✅ Engellenir</td><td>❌ Oluşabilir</td></tr>
         <tr><td><strong>Serializable</strong> (En Katı)</td><td>✅ Engellenir</td><td>✅ Engellenir</td><td>✅ Engellenir</td></tr>
     </table>
-</div>`
-}
-];
+</div>
+"""
+    }
+]
+
+# Write to topics.js
+output = "// =============================================\n"
+output += "// VTYS MASTER KONU ANLATIMLARI - 100 Tam Puan Rehberi\n"
+output += "// Tüm ders slaytları, deney föyü ve çıkmış sınavlardan derlenmiştir.\n"
+output += "// =============================================\n\n"
+output += "const TOPICS = [\n"
+
+for i, topic in enumerate(TOPICS_DATA):
+    output += "{\n"
+    output += f'  id: "{topic["id"]}",\n'
+    output += f'  icon: "{topic["icon"]}",\n'
+    output += f'  title: "{topic["title"]}",\n'
+    output += f'  priority: "{topic["priority"]}",\n'
+    output += f'  subtitle: "{topic["subtitle"]}",\n'
+    output += f'  content: `{topic["content"].strip()}`\n'
+    output += "}"
+    if i < len(TOPICS_DATA) - 1:
+        output += ","
+    output += "\n"
+
+output += "];\n"
+
+with open("topics.js", "w", encoding="utf-8") as f:
+    f.write(output)
+
+print(f"topics.js başarıyla oluşturuldu! Toplam konu sayısı: {len(TOPICS_DATA)}")
