@@ -1,6 +1,9 @@
-// =============================================
-// VTYS Final Sınav Hazırlık - Ana Uygulama
-// =============================================
+// Data Versioning & Auto Reset for new 400 questions dataset
+const DATA_VERSION = 'v2_400q_clean';
+if (localStorage.getItem('vtys_data_version') !== DATA_VERSION) {
+    localStorage.removeItem('vtys_completed');
+    localStorage.setItem('vtys_data_version', DATA_VERSION);
+}
 
 // State
 let currentExam = null;
@@ -39,32 +42,41 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 // Konu Analiz Haritası & Sınıflandırıcı
 // =============================
 const TOPIC_MAP = {
-    'Trigger (Tetikleyiciler)': 'trigger',
-    'Cursor (İmleçler)': 'cursor',
-    'Stored Procedure': 'stored-procedure',
-    'PL/SQL & T-SQL': 'plsql',
-    'Normalizasyon': 'normalizasyon',
-    'Tablo Birleştirmeleri (JOIN)': 'sql-temel',
+    'Temel SQL & Sorgular': 'sql-temel',
+    'JOIN & Alt Sorgular': 'sql-temel',
+    'Stored Procedure & Fonksiyonlar': 'stored-procedure',
     'İlişkisel Cebir': 'iliskisel-cebir',
+    'DDL, Kısıtlar & Bütünlük': 'sql-ddl',
+    'Trigger (Tetikleyiciler)': 'trigger',
     'ER Modelleme & Tasarım': 'er-modelleme',
-    'DDL / DML & Bütünlük': 'sql-ddl',
-    'SQL & Genel Sorgular': 'sql-temel'
+    'PL/SQL & T-SQL Programlama': 't-sql',
+    'Cursor (İmleçler)': 'cursor',
+    'Normalizasyon': 'normalizasyon'
 };
 
 function getQuestionTopic(q) {
     const text = ((q.q || '') + ' ' + (q.e || '')).toLowerCase();
 
-    if (text.includes('trigger') || text.includes('inserted') || text.includes('deleted tab')) return 'Trigger (Tetikleyiciler)';
-    if (text.includes('cursor') || text.includes('fetch') || text.includes('deallocate') || text.includes('%notfound')) return 'Cursor (İmleçler)';
-    if (text.includes('procedure') || text.includes('saklı yordam') || text.includes('stored')) return 'Stored Procedure';
-    if (text.includes('pl/sql') || text.includes('%type') || text.includes('%rowtype') || text.includes('declare') || text.includes('package')) return 'PL/SQL & T-SQL';
-    if (text.includes('1nf') || text.includes('2nf') || text.includes('3nf') || text.includes('bcnf') || text.includes('normalizasyon') || text.includes('bağımlılık')) return 'Normalizasyon';
-    if (text.includes('join') || text.includes('left join') || text.includes('right join') || text.includes('full join')) return 'Tablo Birleştirmeleri (JOIN)';
-    if (text.includes('ilişkisel cebir') || text.includes('kartezyen') || text.includes('projeksiyon') || text.includes('semijoin') || text.includes('bölme') || text.includes('σ') || text.includes('π')) return 'İlişkisel Cebir';
-    if (text.includes('er ') || text.includes('varlık') || text.includes('weak entity') || text.includes('aday anahtar') || text.includes('süper anahtar') || text.includes('birincil anahtar')) return 'ER Modelleme & Tasarım';
-    if (text.includes('create table') || text.includes('alter table') || text.includes('grant') || text.includes('revoke') || text.includes('check') || text.includes('foreign key') || text.includes('dml') || text.includes('ddl')) return 'DDL / DML & Bütünlük';
+    if (text.includes('trigger') || text.includes('tetikleyici') || text.includes('inserted') || text.includes('deleted tab')) return 'Trigger (Tetikleyiciler)';
+    if (text.includes('cursor') || text.includes('imleç') || text.includes('fetch') || text.includes('deallocate') || text.includes('@@fetch_status')) return 'Cursor (İmleçler)';
+    if (text.includes('procedure') || text.includes('saklı yordam') || text.includes('create proc') || text.includes('fonksiyon') || text.includes('function') || text.includes('udf') || text.includes('skaler')) return 'Stored Procedure & Fonksiyonlar';
+    if (text.includes('pl/sql') || text.includes('%type') || text.includes('%rowtype') || text.includes('package') || text.includes('varray') || text.includes('declare') || text.includes('@@rowcount') || text.includes('@@identity') || text.includes('while') || text.includes('case when')) return 'PL/SQL & T-SQL Programlama';
+    if (text.includes('1nf') || text.includes('2nf') || text.includes('3nf') || text.includes('bcnf') || text.includes('4nf') || text.includes('5nf') || text.includes('normalizasyon') || text.includes('kısmi bağımlılık') || text.includes('geçişli bağımlılık') || text.includes('anomali') || text.includes('armstrong') || text.includes('ayrıştırma')) return 'Normalizasyon';
+    if (text.includes('er model') || text.includes('zayıf varlık') || text.includes('weak entity') || text.includes('türetilen nitelik') || text.includes('çok değerli nitelik') || text.includes('aday anahtar') || text.includes('süper anahtar') || text.includes('kavşak')) return 'ER Modelleme & Tasarım';
+    if (text.includes('ilişkisel cebir') || text.includes('kartezyen') || text.includes('projeksiyon') || text.includes('semijoin') || text.includes('bölme') || text.includes('σ') || text.includes('π') || text.includes('⋈')) return 'İlişkisel Cebir';
+    if (text.includes('create table') || text.includes('alter table') || text.includes('drop table') || text.includes('foreign key') || text.includes('primary key') || text.includes('check (') || text.includes('unique') || text.includes('cascade') || text.includes('index') || text.includes('indeks') || text.includes('transaction') || text.includes('acid') || text.includes('commit') || text.includes('rollback') || text.includes('grant') || text.includes('revoke')) return 'DDL, Kısıtlar & Bütünlük';
+    if (text.includes('join') || text.includes('alt sorgu') || text.includes('subquery') || text.includes('exists') || text.includes('> all') || text.includes('> any')) return 'JOIN & Alt Sorgular';
 
-    return 'SQL & Genel Sorgular';
+    return 'Temel SQL & Sorgular';
+}
+
+function resetAllProgress() {
+    if (confirm('Tüm çözülmüş sınav sonuçları ve konu bazlı eksik analizleriniz sıfırlanacak. Onaylıyor musunuz?')) {
+        localStorage.removeItem('vtys_completed');
+        completedExams = {};
+        renderExamsGrid();
+        alert('Tüm ilerleme ve analizler sıfırlandı. Testleri sıfırdan çözebilirsiniz!');
+    }
 }
 
 function goToTopicStudy(topicId) {

@@ -95,9 +95,14 @@
 
             <!-- ==================== EXAMS LIST SECTION ==================== -->
             <section id="examsSection" class="section-page hidden">
-                <div class="topics-header">
-                    <h2 class="section-title"><span class="emoji">📝</span> Deneme Sınavları</h2>
-                    <p class="section-desc">10 farklı 40 soruluk test. Son slaytlara (Trigger, Cursor, PL/SQL vb.) ağırlık verilmiştir.</p>
+                <div class="topics-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h2 class="section-title"><span class="emoji">📝</span> Deneme Sınavları</h2>
+                        <p class="section-desc">10 farklı 40 soruluk test. Son slaytlara (Trigger, Cursor, PL/SQL vb.) ağırlık verilmiştir.</p>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="resetAllProgress()" style="color: var(--error); border-color: rgba(239, 68, 68, 0.4); margin-top: 4px;" title="Önceki çözülen test verilerini ve analizleri sıfırla">
+                        <span>🗑️ İlerlemeyi & Analizleri Sıfırla</span>
+                    </button>
                 </div>
                 <div id="globalAnalysisContainer" class="global-analysis-container"></div>
                 <div class="exams-grid" id="examsGrid"></div>
