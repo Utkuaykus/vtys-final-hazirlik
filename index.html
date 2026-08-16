@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VTYS Final Sınavı Hazırlık - Konu Anlatımı & 10 Farklı 40 Soruluk Test</title>
+    <meta name="description" content="Veritabanı Yönetim Sistemleri final sınavına hazırlık. Konu anlatımları ve 10 farklı 40 soruluk test.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+        <div class="floating-shape shape-5"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🗃️</span>
+                    <div>
+                        <h1 class="logo-text">VTYS Final Hazırlık</h1>
+                        <p class="logo-sub">Veritabanı Yönetim Sistemleri • Konu Anlatımı & 10 Sınav</p>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <button class="nav-btn active" data-tab="home" id="navHome">🏠 Ana Sayfa</button>
+                    <button class="nav-btn" data-tab="topics" id="navTopics">📚 Konular</button>
+                    <button class="nav-btn" data-tab="exams" id="navExams">📝 Sınavlar</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- HOME -->
+            <section id="homeSection" class="section-page">
+                <div class="hero-section">
+                    <h2 class="hero-title">100 Almaya Hazır mısın? 🎯</h2>
+                    <p class="hero-desc">Önce konuları öğren, sonra sınavlarla kendini test et. Son slaytlara ağırlık verilmiştir: Trigger, Cursor, Stored Procedure, PL/SQL ve Normalizasyon.</p>
+                    <div class="topic-tags">
+                        <span class="tag tag-hot">🔥 Trigger</span>
+                        <span class="tag tag-hot">🔥 Cursor</span>
+                        <span class="tag tag-hot">🔥 Stored Procedure</span>
+                        <span class="tag tag-hot">🔥 PL/SQL</span>
+                        <span class="tag tag-hot">🔥 Normalizasyon</span>
+                        <span class="tag tag-warm">⭐ SQL Sorguları</span>
+                        <span class="tag tag-warm">⭐ ER Modelleme</span>
+                        <span class="tag tag-warm">⭐ DDL / Bütünlük</span>
+                        <span class="tag tag-cool">📘 İlişkisel Cebir</span>
+                        <span class="tag tag-cool">📘 İlişkisel Model</span>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-lg" onclick="switchTab('topics')">📚 Konuları Öğren</button>
+                        <button class="btn btn-secondary btn-lg" onclick="switchTab('exams')">📝 Sınavlara Başla</button>
+                    </div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Konu Başlığı</div></div>
+                    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Farklı Sınav</div></div>
+                    <div class="stat-card"><div class="stat-num">400</div><div class="stat-label">Toplam Soru</div></div>
+                    <div class="stat-card"><div class="stat-num">40</div><div class="stat-label">Soru / Sınav</div></div>
+                </div>
+            </section>
+
+            <!-- TOPICS -->
+            <section id="topicsSection" class="section-page hidden">
+                <div class="topics-header">
+                    <h2 class="section-title">📚 Konu Anlatımları</h2>
+                    <p class="section-desc">Tüm ders slaytlarından derlenen kapsamlı konu anlatımları. Her konuyu tıklayarak detaylı bilgiye ulaşın.</p>
+                </div>
+                <div class="topics-sidebar-layout">
+                    <div class="topics-nav" id="topicsNav"></div>
+                    <div class="topic-content-area" id="topicContentArea">
+                        <div class="topic-placeholder">
+                            <span class="placeholder-icon">👈</span>
+                            <p>Soldaki menüden bir konu seçin</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EXAMS LIST -->
+            <section id="examsSection" class="section-page hidden">
+                <div class="topics-header">
+                    <h2 class="section-title">📝 Sınavlar</h2>
+                    <p class="section-desc">10 farklı 40 soruluk sınav. Son slaytlara ağırlık verilmiştir.</p>
+                </div>
+                <div class="exams-grid" id="examsGrid"></div>
+            </section>
+
+            <!-- EXAM VIEW -->
+            <section id="examView" class="section-page hidden">
+                <div class="exam-header-bar">
+                    <button class="btn-back" id="btnBack"><span>←</span> Sınavlara Dön</button>
+                    <div class="exam-info">
+                        <h2 id="examTitle"></h2>
+                        <div class="exam-meta">
+                            <span id="examQuestionCount"></span>
+                            <span id="examTimer" class="timer">⏱️ 00:00</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <span class="progress-text" id="progressText">0/40</span>
+                    </div>
+                </div>
+                <div id="questionsContainer"></div>
+                <div class="exam-actions">
+                    <button class="btn btn-primary btn-lg" id="btnSubmit">✅ Sınavı Bitir ve Sonuçları Gör</button>
+                </div>
+            </section>
+
+            <!-- RESULTS -->
+            <section id="resultsView" class="section-page hidden">
+                <div class="results-card">
+                    <div class="results-header">
+                        <h2>📋 Sınav Sonucu</h2>
+                        <div class="score-circle" id="scoreCircle">
+                            <svg viewBox="0 0 120 120">
+                                <defs><linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#a78bfa"/></linearGradient></defs>
+                                <circle class="score-bg" cx="60" cy="60" r="54"/>
+                                <circle class="score-fill" cx="60" cy="60" r="54" id="scoreFill" stroke="url(#scoreGradient)"/>
+                            </svg>
+                            <div class="score-text" id="scoreText">0</div>
+                        </div>
+                    </div>
+                    <div class="results-stats" id="resultsStats"></div>
+                    <div class="results-actions">
+                        <button class="btn btn-primary" id="btnReview">🔍 Cevapları İncele</button>
+                        <button class="btn btn-secondary" id="btnRetake">🔄 Tekrar Çöz</button>
+                        <button class="btn btn-outline" id="btnBackToExams">📝 Diğer Sınavlar</button>
+                    </div>
+                </div>
+                <div class="review-container hidden" id="reviewContainer"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>VTYS Final Hazırlık • Phd. Ahmet ALBAYRAK Ders İçerikleri Baz Alınmıştır</p>
+            <p class="footer-small">Son slaytlara ağırlık verilmiştir: Trigger, Cursor, Stored Procedure, PL/SQL, Normalizasyon</p>
+        </div>
+    </footer>
+
+    <script src="topics.js"></script>
+    <script src="examData.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
