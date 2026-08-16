@@ -97,18 +97,29 @@ function renderExamsGrid() {
             <div class="exam-card-footer">
                 <span class="exam-card-count">📝 ${exam.questions.length} soru</span>
                 ${completed
-                    ? `<span class="exam-card-status status-done">✅ ${completed.score}/${completed.total}</span>`
+                    ? `<span class="exam-card-status status-done">✅ Sonuç: ${completed.score}/${completed.total} (%${completed.percentage})</span>`
                     : `<span class="exam-card-status status-new">🆕 Çözülmedi</span>`
                 }
             </div>
         `;
-        card.addEventListener('click', () => startExam(exam.id));
+        card.addEventListener('click', () => handleExamClick(exam.id));
         grid.appendChild(card);
     });
 }
 
+function handleExamClick(examId) {
+    const completed = completedExams[examId];
+    if (completed && completed.answers) {
+        // Exam already completed and has saved answers -> show results & review mode
+        openSavedResults(examId);
+    } else {
+        // Start fresh exam
+        startExam(examId, true);
+    }
+}
+
 // ============ Exam ============
-function startExam(examId) {
+function startExam(examId, forceReset = false) {
     const exam = EXAMS.find(e => e.id === examId);
     if (!exam) return;
 
@@ -249,10 +260,50 @@ function showResults() {
     const total = questions.length;
     const score = Math.round((correct / total) * 100);
 
-    // Save progress
-    completedExams[currentExam.id] = { score: correct, total, percentage: score };
+    // Save progress WITH ANSWERS in localStorage
+    completedExams[currentExam.id] = {
+        score: correct,
+        total,
+        percentage: score,
+        answers: currentAnswers,
+        timerSeconds: timerSeconds
+    };
     localStorage.setItem('vtys_completed', JSON.stringify(completedExams));
 
+    displayResultsView(correct, wrong, unanswered, score);
+}
+
+function openSavedResults(examId) {
+    const exam = EXAMS.find(e => e.id === examId);
+    const saved = completedExams[examId];
+    if (!exam || !saved) return;
+
+    currentExam = exam;
+    currentAnswers = saved.answers || {};
+
+    let correct = saved.score;
+    let total = saved.total || exam.questions.length;
+    let wrong = 0;
+    let unanswered = 0;
+
+    exam.questions.forEach((q, qi) => {
+        const ans = currentAnswers[qi];
+        if (ans !== undefined) {
+            if (ans !== q.a) wrong++;
+        } else {
+            unanswered++;
+        }
+    });
+
+    displayResultsView(correct, wrong, unanswered, saved.percentage);
+    
+    // Automatically render review mode when opened from saved
+    const reviewContainer = document.getElementById('reviewContainer');
+    reviewContainer.classList.remove('hidden');
+    renderReview();
+}
+
+function displayResultsView(correct, wrong, unanswered, score) {
     // Show results section
     Object.values(sections).forEach(s => s.classList.add('hidden'));
     sections.results.classList.remove('hidden');
@@ -346,7 +397,7 @@ function renderReview() {
 
 // ============ Result Actions ============
 document.getElementById('btnRetake').addEventListener('click', () => {
-    startExam(currentExam.id);
+    startExam(currentExam.id, true);
 });
 
 document.getElementById('btnBackToExams').addEventListener('click', () => {
@@ -363,3 +414,4 @@ document.getElementById('btnBack').addEventListener('click', () => {
 
 // ============ Init ============
 renderExamsGrid();
+
