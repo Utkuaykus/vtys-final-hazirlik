@@ -35,6 +35,43 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
 
+// =============================
+// Konu Analiz Haritası & Sınıflandırıcı
+// =============================
+const TOPIC_MAP = {
+    'Trigger (Tetikleyiciler)': 'trigger',
+    'Cursor (İmleçler)': 'cursor',
+    'Stored Procedure': 'stored-procedure',
+    'PL/SQL & T-SQL': 'plsql',
+    'Normalizasyon': 'normalizasyon',
+    'Tablo Birleştirmeleri (JOIN)': 'sql-temel',
+    'İlişkisel Cebir': 'iliskisel-cebir',
+    'ER Modelleme & Tasarım': 'er-modelleme',
+    'DDL / DML & Bütünlük': 'sql-ddl',
+    'SQL & Genel Sorgular': 'sql-temel'
+};
+
+function getQuestionTopic(q) {
+    const text = ((q.q || '') + ' ' + (q.e || '')).toLowerCase();
+
+    if (text.includes('trigger') || text.includes('inserted') || text.includes('deleted tab')) return 'Trigger (Tetikleyiciler)';
+    if (text.includes('cursor') || text.includes('fetch') || text.includes('deallocate') || text.includes('%notfound')) return 'Cursor (İmleçler)';
+    if (text.includes('procedure') || text.includes('saklı yordam') || text.includes('stored')) return 'Stored Procedure';
+    if (text.includes('pl/sql') || text.includes('%type') || text.includes('%rowtype') || text.includes('declare') || text.includes('package')) return 'PL/SQL & T-SQL';
+    if (text.includes('1nf') || text.includes('2nf') || text.includes('3nf') || text.includes('bcnf') || text.includes('normalizasyon') || text.includes('bağımlılık')) return 'Normalizasyon';
+    if (text.includes('join') || text.includes('left join') || text.includes('right join') || text.includes('full join')) return 'Tablo Birleştirmeleri (JOIN)';
+    if (text.includes('ilişkisel cebir') || text.includes('kartezyen') || text.includes('projeksiyon') || text.includes('semijoin') || text.includes('bölme') || text.includes('σ') || text.includes('π')) return 'İlişkisel Cebir';
+    if (text.includes('er ') || text.includes('varlık') || text.includes('weak entity') || text.includes('aday anahtar') || text.includes('süper anahtar') || text.includes('birincil anahtar')) return 'ER Modelleme & Tasarım';
+    if (text.includes('create table') || text.includes('alter table') || text.includes('grant') || text.includes('revoke') || text.includes('check') || text.includes('foreign key') || text.includes('dml') || text.includes('ddl')) return 'DDL / DML & Bütünlük';
+
+    return 'SQL & Genel Sorgular';
+}
+
+function goToTopicStudy(topicId) {
+    switchTab('topics');
+    showTopic(topicId);
+}
+
 // ============ Topics ============
 function renderTopicsNav() {
     const nav = document.getElementById('topicsNav');
@@ -81,6 +118,7 @@ function showTopic(topicId) {
 
 // ============ Exams Grid ============
 function renderExamsGrid() {
+    renderGlobalAnalysis();
     const grid = document.getElementById('examsGrid');
     grid.innerHTML = '';
     EXAMS.forEach(exam => {
@@ -105,6 +143,89 @@ function renderExamsGrid() {
         card.addEventListener('click', () => handleExamClick(exam.id));
         grid.appendChild(card);
     });
+}
+
+function renderGlobalAnalysis() {
+    const container = document.getElementById('globalAnalysisContainer');
+    if (!container) return;
+
+    const completedIds = Object.keys(completedExams);
+    if (completedIds.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const topicStats = {};
+
+    completedIds.forEach(examId => {
+        const saved = completedExams[examId];
+        const exam = EXAMS.find(e => e.id == examId);
+        if (!exam || !saved.answers) return;
+
+        exam.questions.forEach((q, qi) => {
+            const topic = getQuestionTopic(q);
+            if (!topicStats[topic]) topicStats[topic] = { correct: 0, total: 0 };
+            topicStats[topic].total++;
+            if (saved.answers[qi] !== undefined && saved.answers[qi] === q.a) {
+                topicStats[topic].correct++;
+            }
+        });
+    });
+
+    const topicKeys = Object.keys(topicStats);
+    if (topicKeys.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const weakTopics = [];
+    const strongTopics = [];
+
+    topicKeys.forEach(t => {
+        const pct = Math.round((topicStats[t].correct / topicStats[t].total) * 100);
+        if (pct < 70) weakTopics.push({ topic: t, pct, correct: topicStats[t].correct, total: topicStats[t].total });
+        else strongTopics.push({ topic: t, pct, correct: topicStats[t].correct, total: topicStats[t].total });
+    });
+
+    weakTopics.sort((a, b) => a.pct - b.pct);
+    strongTopics.sort((a, b) => b.pct - a.pct);
+
+    container.innerHTML = `
+        <div class="global-analysis-card">
+            <div class="topic-analysis-title">
+                <span>📊 Genel Eksik & Performans Analizi (${completedIds.length} Sınav Çözüldü)</span>
+            </div>
+            <div class="global-analysis-grid">
+                <div class="analysis-box">
+                    <div class="analysis-box-title" style="color: var(--error)">
+                        <span>🔥 Geliştirilmesi Gereken Konular (Eksiklerin)</span>
+                    </div>
+                    ${weakTopics.length > 0 ? weakTopics.map(w => `
+                        <div class="topic-stat-item" style="margin-bottom: 8px;">
+                            <div class="topic-stat-header">
+                                <span class="topic-stat-name">${w.topic}</span>
+                                <span class="topic-stat-badge badge-danger">%${w.pct} (${w.correct}/${w.total})</span>
+                            </div>
+                            <button class="btn-study-topic" onclick="goToTopicStudy('${TOPIC_MAP[w.topic] || 'sql-temel'}')">📚 Konuyu İncele →</button>
+                        </div>
+                    `).join('') : '<p style="font-size:0.85rem; color:var(--text-muted)">Henüz belirgin bir eksik konu tespit edilmedi. Harika gidiyorsun! 🎉</p>'}
+                </div>
+                <div class="analysis-box">
+                    <div class="analysis-box-title" style="color: var(--success)">
+                        <span>✅ Başarılı Olduğun Güçlü Konular</span>
+                    </div>
+                    ${strongTopics.length > 0 ? strongTopics.map(s => `
+                        <div class="topic-stat-item" style="margin-bottom: 8px;">
+                            <div class="topic-stat-header">
+                                <span class="topic-stat-name">${s.topic}</span>
+                                <span class="topic-stat-badge badge-success">%${s.pct} (${s.correct}/${s.total})</span>
+                            </div>
+                        </div>
+                    `).join('') : '<p style="font-size:0.85rem; color:var(--text-muted)">Daha fazla test çözerek güçlü yönlerini keşfet!</p>'}
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function handleExamClick(examId) {
@@ -335,8 +456,75 @@ function displayResultsView(correct, wrong, unanswered, score) {
         </div>
     `;
 
+    renderTopicAnalysis(currentExam, currentAnswers);
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+function renderTopicAnalysis(exam, answers) {
+    const container = document.getElementById('topicAnalysisContainer');
+    if (!container || !exam) return;
+
+    const topicStats = {};
+
+    exam.questions.forEach((q, qi) => {
+        const topic = getQuestionTopic(q);
+        if (!topicStats[topic]) {
+            topicStats[topic] = { correct: 0, total: 0 };
+        }
+        topicStats[topic].total++;
+        if (answers[qi] !== undefined && answers[qi] === q.a) {
+            topicStats[topic].correct++;
+        }
+    });
+
+    let html = `
+        <div class="topic-analysis-title">
+            <span>🎯 Konu Bazlı Başarı & Eksik Analizi</span>
+        </div>
+        <div class="topic-stat-list">
+    `;
+
+    Object.keys(topicStats).forEach(topic => {
+        const stat = topicStats[topic];
+        const pct = Math.round((stat.correct / stat.total) * 100);
+        let badgeClass = 'badge-success';
+        let fillClass = 'fill-success';
+        let statusLabel = '✅ Başarılı';
+
+        if (pct < 50) {
+            badgeClass = 'badge-danger';
+            fillClass = 'fill-danger';
+            statusLabel = '🔥 Acil Çalış (Eksik)';
+        } else if (pct < 75) {
+            badgeClass = 'badge-warning';
+            fillClass = 'fill-warning';
+            statusLabel = '⚠️ Tekrar Et';
+        }
+
+        const targetTopicId = TOPIC_MAP[topic] || 'sql-temel';
+
+        html += `
+            <div class="topic-stat-item">
+                <div class="topic-stat-header">
+                    <span class="topic-stat-name">${topic}</span>
+                    <span class="topic-stat-badge ${badgeClass}">${statusLabel}</span>
+                </div>
+                <div class="topic-progress-wrapper">
+                    <div class="topic-bar-bg">
+                        <div class="topic-bar-fill ${fillClass}" style="width: ${pct}%"></div>
+                    </div>
+                    <span class="topic-stat-pct">%${pct} (${stat.correct}/${stat.total})</span>
+                </div>
+                ${pct < 75 ? `<button class="btn-study-topic" onclick="goToTopicStudy('${targetTopicId}')">📚 Konu Anlatımını Oku →</button>` : ''}
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
 
 // ============ Review ============
 document.getElementById('btnReview').addEventListener('click', () => {
